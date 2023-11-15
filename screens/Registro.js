@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ScrollView, StyleSheet, Image, View, Alert } from 'react-native'
 import { Input, Text, Button } from '@rneui/themed'
+import Platillos from '../components/Platillos'
 
 const Registro = (props) => {
 
@@ -25,6 +26,7 @@ const Registro = (props) => {
 
   return (
     <ScrollView style={styles.container}>
+        {/* <Platillos /> */}
         <Image style={styles.logo} source={require("../img/LogotipoWhite.png")} />
 
         <Input 
@@ -66,8 +68,6 @@ const Registro = (props) => {
             <Button color="#486673" onPress={()=> props.navigation.navigate("InicioSesion")}>¿Ya tienes una cuenta? Inicia Sesión</Button>
         </View>
        
-
-
       
     </ScrollView>
   )
