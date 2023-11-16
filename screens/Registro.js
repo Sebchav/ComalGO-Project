@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { ScrollView, StyleSheet, Image, View, Alert } from 'react-native'
 import { Input, Text, Button } from '@rneui/themed'
 import Platillos from '../components/Platillos'
+import BtnPrincipal from '../components/BtnPrincipal'
 
 const Registro = (props) => {
 
@@ -27,6 +28,7 @@ const Registro = (props) => {
   return (
     <ScrollView style={styles.container}>
         {/* <Platillos /> */}
+        {/* <BtnPrincipal texto={"Añadir a la orden"}/> */}
         <Image style={styles.logo} source={require("../img/LogotipoWhite.png")} />
 
         <Input 

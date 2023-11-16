@@ -1,16 +1,67 @@
-import React from 'react'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import React, {useState} from 'react'
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 const Footer = () => {
+
+  const [pantallaActual, setPantallaActual] = useState("Categorias");
+
+  const navigation = useNavigation();
+
   return (
     <View style={styles.contenedorFooter}>
-       <Image style={styles.img} source={require("../assets/iconoNav1.png")}/>
 
-       <Image style={styles.img} source={require("../assets/iconoNav2.png")}/>
+      <Pressable
+        onPress={()=> {
+          navigation.navigate("Categorias");
+          setPantallaActual("Categorias");
+        }}
+      >
+        <Image style={styles.img}source={
+          pantallaActual == 'Categorias'
+            ? require('../assets/iconoNavSeleccion1.png')
+            : require('../assets/iconoNav1.png')
+        }/>
+      </Pressable>
+       
+      <Pressable
+        onPress={()=> {
+          navigation.navigate("Orden")
+          setPantallaActual("Orden");
+        }}
+      >
+         <Image style={styles.img}source={
+          pantallaActual == 'Orden'
+            ? require('../assets/iconoNavSeleccion2.png')
+            : require('../assets/iconoNav2.png')
+        }/>
+      </Pressable>
 
-       <Image style={styles.img} source={require("../assets/iconoNav3.png")}/>
+      <Pressable
+        onPress={()=> {
+          navigation.navigate("Status")
+          setPantallaActual("Status");
+        }}
+      >
+         <Image style={styles.img}source={
+          pantallaActual == 'Status'
+            ? require('../assets/iconoNavSeleccion3.png')
+            : require('../assets/iconoNav3.png')
+        }/>
+      </Pressable>
 
-       <Image style={styles.img} source={require("../assets/iconoNav4.png")}/>
+      <Pressable
+        onPress={()=> {
+          navigation.navigate("Perfil")
+          setPantallaActual("Perfil");
+        }}
+      >
+        <Image style={styles.img}source={
+          pantallaActual == 'Perfil'
+            ? require('../assets/iconoNavSeleccion4.png')
+            : require('../assets/iconoNav4.png')
+        }/>
+      </Pressable>
     </View>
   )
 }

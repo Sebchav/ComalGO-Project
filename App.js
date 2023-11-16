@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import PantallaInicial from './screens/PantallaInicial';
 import InicioSesion from './screens/InicioSesion';
@@ -15,13 +15,15 @@ import Footer from './components/Footer';
 
 const Stack = createNativeStackNavigator();
 
+
 function MyStack(){
   return (
     <Stack.Navigator>
+      <Stack.Screen name="Categorias" component={Categorias} options={{headerShown: false}}/>
       <Stack.Screen name="PantallaInicial" component={PantallaInicial} options={{headerShown: false}}/>
       <Stack.Screen name="Registro" component={Registro} options={{headerShown: false}}/>
       <Stack.Screen name="InicioSesion" component={InicioSesion} options={{headerShown: false}}/>
-      <Stack.Screen name="Categorias" component={Categorias} options={{headerShown: false}}/>
+      {/* <Stack.Screen name="Categorias" component={Categorias} options={{headerShown: false}}/> */}
       <Stack.Screen name="Orden" component={Orden} options={{headerShown: false}}/>
       <Stack.Screen name="Status" component={Status} options={{headerShown: false}}/>
       <Stack.Screen name="Perfil" component={Perfil} options={{headerShown: false}}/>
@@ -30,10 +32,11 @@ function MyStack(){
 }
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <MyStack />
-      {/* <Footer /> */}
+      <Footer />
     </NavigationContainer>
   );
 }
