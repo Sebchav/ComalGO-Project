@@ -18,7 +18,9 @@ const styles = StyleSheet.create({
     textoBtn: {
         color: "white",
         textAlign: "center",
-        fontSize: 16,
+        fontSize: 18,
+        fontWeight:'bold',
+
     }
 })
 
