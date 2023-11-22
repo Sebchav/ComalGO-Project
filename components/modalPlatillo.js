@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 30,
     width: '100%',
@@ -106,17 +105,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    backgroundColor: '#32324D',
   },
   imgTop:{
     flexDirection: "row",
