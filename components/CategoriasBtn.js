@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import BtnCategoria from './BtnCategoria';
 
-const Categorias = () => {
+const CategoriasBtn = () => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -23,7 +23,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
-    marginHorizontal: 5
+    marginHorizontal: 5,
   },
   row: {
     flexDirection: 'row',
@@ -32,4 +32,4 @@ const styles = {
   },
 };
 
-export default Categorias;
+export default CategoriasBtn;

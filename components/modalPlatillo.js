@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, View, Image, TextInput,TouchableOpacity} from 'react-native';
 import BtnPrincipal from '../components/BtnPrincipal';
 
-const ModalPlatillo = ({nombrePlatillo, precioPlatillo}) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVisible}) => {
+ 
   const [cantidad, setCantidad] = useState(0);
 
   const handleCantidadPlus = (cantidad)=> {

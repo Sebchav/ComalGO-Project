@@ -1,9 +1,11 @@
 import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, Pressable, TouchableOpacity } from 'react-native'
 
-const PlatilloCard = ({nombrePlatillo, precio}) => {
+const PlatilloCard = ({nombrePlatillo, precio, modalVisible, setModalVisible}) => {
   return (
-    <View style={styles.contenedorPlatillo}>
+    <TouchableOpacity style={styles.contenedorPlatillo}
+       onPress={()=> setModalVisible(!modalVisible)}
+    >
         <View style={styles.infoPlatillo}>
             <Image source={require("../assets/platilloEjemplo.png")}/>
             <View style={styles.textosPlatillo}>
@@ -13,7 +15,7 @@ const PlatilloCard = ({nombrePlatillo, precio}) => {
         </View>
 
         <Image source={require("../assets/flechaDerecha.png")}/>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -22,6 +24,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white', // Ajusta el fondo según tus necesidades
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginVertical: 6,
         marginHorizontal: 4,
         alignItems: 'center',
         borderRadius: 10,
