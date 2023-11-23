@@ -13,7 +13,7 @@ const Orden = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.contenedorPrincipal}>
       {/* <ScrollView> */}
 
       <Platillos2 />
@@ -37,10 +37,14 @@ const Orden = () => {
 const styles = StyleSheet.create({
   BtnPrincipal: {
     // alignItems: "center",
-    marginTop: "5%",
+    marginTop: "15%",
     maxWidth: "100%",
     marginHorizontal: "10%",
   },
+  contenedorPrincipal: {
+    backgroundColor: "white",
+    flex:1,
+  }
 });
 
 export default Orden;

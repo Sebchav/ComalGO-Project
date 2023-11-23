@@ -6,7 +6,7 @@ const Status = () => {
   const tiempoAproximado = 10;
   const total = 50;
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.titulo}>
         Tu orden estará lista en aproximadamente {"\n"}
         <Text style={styles.tiempo}>{tiempoAproximado} minutos</Text>
@@ -16,8 +16,8 @@ const Status = () => {
         <Text style={styles.textoProductos}>Tus Productos</Text>
         <Productos />
         <View style={styles.contenedorTotal}>
-          <Text>Total</Text>
-          <Text>${total}</Text>
+          <Text style={styles.textoTotal}>Total</Text>
+          <Text style={styles.textoCantidad}>${total}</Text>
         </View>
       </View>
     </View>
@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   contenedorPrincipal: {
-    backgroundColor: "lightblue",
     marginTop: 30,
     marginHorizontal: 30,
   },
@@ -51,8 +50,21 @@ const styles = StyleSheet.create({
   contenedorTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
+    marginTop: 40,
   },
+  textoTotal:{
+    color: "#4A4A6A",
+    fontSize: 20
+  },
+  textoCantidad: {
+    fontSize: 20,
+    color: "#4A4A6A",
+    fontWeight: "bold"
+  },
+  container: {
+    backgroundColor: "white",
+    flex: 1
+  }
 });
 
 export default Status;

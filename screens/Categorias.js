@@ -13,7 +13,6 @@ const Categorias = () => {
       <Text>Pantalla Categorías</Text>
       {/* <Platillos2/> */}
       {/* <ModalPlatillo nombrePlatillo={'Ejemplo'} precioPlatillo={'10.00'}/> */}
-      
     </SafeAreaView>
   );
 };

@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     height: 70,
   },
   container: {
-    marginTop: 10,
+    marginTop: 15,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   contenedorIzq: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 18,
+    gap: 12,
   },
   precio: {
     fontSize: 17,

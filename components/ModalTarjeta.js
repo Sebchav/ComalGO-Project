@@ -77,12 +77,7 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
           </View>
         </View>
       </Modal>
-      <TouchableOpacity
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </TouchableOpacity>
+      
     </View>
   );
 };
