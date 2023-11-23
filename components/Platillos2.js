@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import PlatilloCard from './PlatilloCard'
+import PlatilloCard2 from './PlatilloCard2'
 
-const Platillos = () => {
+const Platillos2 = () => {
   return ( 
     <View style={styles.contenedorPlatillos}>
-        <PlatilloCard nombrePlatillo={"Ejemplo1"} precio={"$10.40"}/>
-        <PlatilloCard nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
+        <PlatilloCard2 nombrePlatillo={"Ejemplo1"} precio={"$10.40"}/>
+        <PlatilloCard2 nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
 
         
     </View>
@@ -20,4 +20,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Platillos
+export default Platillos2
