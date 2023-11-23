@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
     contenedorBtn: {
         backgroundColor: "#35253A",
         padding: 20,
-        borderRadius: 20
+        borderRadius: 20,
+        
     },
     textoBtn: {
         color: "white",
