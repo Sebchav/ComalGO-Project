@@ -12,6 +12,9 @@ import Status from "./screens/Status";
 import Perfil from "./screens/Perfil";
 
 import Footer from "./components/Footer";
+import MisTarjetas from "./screens/MisTarjetas";
+import EditarPerfil from "./screens/EditarPerfil";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -45,6 +48,22 @@ function MyStack() {
         component={Perfil}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="MisTarjetas"
+        component={MisTarjetas}
+        options={{
+          title: "Mis Tarjetas",
+          headerTitleAlign: 'center',
+          headerTintColor: "white",
+          headerStyle: {
+            backgroundColor: "#35253A"
+          },
+          
+        }}
+      />
+
+      <Stack.Screen name="EditarPerfil" component={EditarPerfil} options={{ headerShown: false }}/>
       {/* La pantalla de orden y status SI llevan headerShown */}
       <Stack.Screen name="Orden" component={Orden} />
       <Stack.Screen name="Status" component={Status} />
@@ -57,6 +76,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <MyStack />
+      <StatusBar
+           backgroundColor="white"
+           barStyle="dark-content"
+      />
       <Footer />
     </NavigationContainer>
   );

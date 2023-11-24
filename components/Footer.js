@@ -69,7 +69,8 @@ const Footer = () => {
 const styles = StyleSheet.create({
     contenedorFooter: {
         backgroundColor: "#35253A",
-        padding: 30,
+        paddingHorizontal: 30,
+        paddingVertical: 18,
         flexDirection: "row",
         justifyContent: "space-between"
     },
