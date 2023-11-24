@@ -23,8 +23,8 @@ const Categorias = () => {
         {/* <ModalTarjeta /> */}
         <ModalPlatillo nombrePlatillo={"Ejemplo"} precioPlatillo={"10.50"} modalVisible={modalVisible} setModalVisible={setModalVisible}/>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   categorias: {
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Categorias
+export default Categorias;
