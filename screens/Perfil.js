@@ -10,26 +10,49 @@ const Perfil = () => {
 
   return (
     <View style={styles.contenedorPrincipal}>
-      <HeaderPerfil texto={"Mi Perfil"}/>
-      <Image style={styles.icono} source={require("../assets/iconoPerfil.png")}/>
+      <HeaderPerfil texto={"Mi Perfil"} />
+      <Image
+        style={styles.icono}
+        source={require("../assets/iconoPerfil.png")}
+      />
       <View style={styles.contenedor}>
         <Text style={styles.titulo}> Información del perfil</Text>
-        <Text> Nombre Usuario </Text>
-        <Text> Correo usuario</Text>
-        <TouchableOpacity
-          onPress={()=> navigation.navigate("EditarPerfil")}
-        >
-          <Text> Editar perfil</Text>
-        </TouchableOpacity>
-        <Text style={styles.titulo}> Métodos de pago</Text>
+        <Text style={styles.texto}> Nombre Usuario </Text>
+        <Text style={styles.texto}> Correo usuario</Text>
 
-        <TouchableOpacity
-          onPress={()=> navigation.navigate("MisTarjetas")}
-        >
-          <Text> Mis tarjetas</Text>
-        </TouchableOpacity>
+        <View style={styles.containerClickableText}>
+          <View style={styles.containerClickableTextIcon}>
+            <Image source={require("../assets/iconoLapizOutlined.png")} />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("MisTarjetas")}
+            >
+              <Text style={styles.texto}> Editar Perfil</Text>
+            </TouchableOpacity>
+          </View>
+          <Image source={require("../assets/flechaDerecha.png")} />
+        </View>
+
+        <Text style={styles.titulo}> Métodos de pago</Text>
+        <View style={styles.containerClickableText}>
+          <View style={styles.containerClickableTextIcon}>
+            <Image source={require("../assets/iconoTarjetaOutlined.png")} />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("MisTarjetas")}
+            >
+              <Text style={styles.texto}> Mis tarjetas</Text>
+            </TouchableOpacity>
+          </View>
+          <Image source={require("../assets/flechaDerecha.png")} />
+        </View>
+
         <Text style={styles.titulo}> Preferencias</Text>
-        <Text> Modo oscuro</Text>
+        <View style={styles.containerClickableText}>
+          <View style={styles.containerClickableTextIcon}>
+            <Image source={require("../assets/iconoModoOscuroOutlined.png")} />
+            <Text style={styles.texto}> Modo oscuro</Text>
+          </View>
+          <Image source={require("../assets/flechaDerecha.png")} />
+        </View>
       </View>
     </View>
   );
@@ -40,10 +63,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
   },
+  texto : {
+    fontSize: 16,
+  },
   contenedor: {
     marginHorizontal: "4%",
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
     gap: 15,
+  },
+  containerClickableText: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  containerClickableTextIcon: {
+    flexDirection: "row",
+    gap: 5
   },
   icono: {
     position: "absolute",
