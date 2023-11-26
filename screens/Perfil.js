@@ -24,7 +24,7 @@ const Perfil = () => {
           <View style={styles.containerClickableTextIcon}>
             <Image source={require("../assets/iconoLapizOutlined.png")} />
             <TouchableOpacity
-              onPress={() => navigation.navigate("MisTarjetas")}
+              onPress={() => navigation.navigate("EditarPerfil")}
             >
               <Text style={styles.texto}> Editar Perfil</Text>
             </TouchableOpacity>
