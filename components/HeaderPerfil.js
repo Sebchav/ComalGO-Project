@@ -15,7 +15,7 @@ const HeaderPerfil = ({texto}) => {
             
             <View style={styles.contenedorFlecha}>
                 <TouchableOpacity
-                    onPress={()=> navigation.navigate("Categorias")}
+                    onPress={()=> navigation.navigate("Perfil")}
                 >
                     <Image style={styles.flecha} source={require("../assets/arrow-left.png")}/>
                 </TouchableOpacity>

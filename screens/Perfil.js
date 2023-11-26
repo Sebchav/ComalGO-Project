@@ -20,30 +20,35 @@ const Perfil = () => {
         <Text style={styles.texto}> Nombre Usuario </Text>
         <Text style={styles.texto}> Correo usuario</Text>
 
-        <View style={styles.containerClickableText}>
-          <View style={styles.containerClickableTextIcon}>
-            <Image source={require("../assets/iconoLapizOutlined.png")} />
-            <TouchableOpacity
+        <TouchableOpacity
               onPress={() => navigation.navigate("EditarPerfil")}
             >
-              <Text style={styles.texto}> Editar Perfil</Text>
-            </TouchableOpacity>
+          <View style={styles.containerClickableText}>
+            <View style={styles.containerClickableTextIcon}>
+              <Image source={require("../assets/iconoLapizOutlined.png")} />
+              
+                <Text style={styles.texto}> Editar Perfil</Text>
+              
+            </View>
+            <Image source={require("../assets/flechaDerecha.png")} />
           </View>
-          <Image source={require("../assets/flechaDerecha.png")} />
-        </View>
+        </TouchableOpacity>
 
         <Text style={styles.titulo}> Métodos de pago</Text>
-        <View style={styles.containerClickableText}>
-          <View style={styles.containerClickableTextIcon}>
-            <Image source={require("../assets/iconoTarjetaOutlined.png")} />
-            <TouchableOpacity
+        
+        <TouchableOpacity
               onPress={() => navigation.navigate("MisTarjetas")}
             >
-              <Text style={styles.texto}> Mis tarjetas</Text>
-            </TouchableOpacity>
+          <View style={styles.containerClickableText}>
+            <View style={styles.containerClickableTextIcon}>
+              <Image source={require("../assets/iconoTarjetaOutlined.png")} />
+              
+                <Text style={styles.texto}> Mis tarjetas</Text>
+              
+            </View>
+            <Image source={require("../assets/flechaDerecha.png")} />
           </View>
-          <Image source={require("../assets/flechaDerecha.png")} />
-        </View>
+        </TouchableOpacity>
 
         <Text style={styles.titulo}> Preferencias</Text>
         <View style={styles.containerClickableText}>
