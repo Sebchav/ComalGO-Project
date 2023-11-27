@@ -1,8 +1,17 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { ScrollView, StyleSheet, Image, View } from 'react-native'
 import { Input, Text, Button } from '@rneui/themed'
+import AppContext from '../context/app/appContext'
 
 const InicioSesion = (props) => {
+
+    const {setLogeado} = useContext(AppContext);
+
+    const handleInicioSesion = ()=>{
+        setLogeado(true)
+        props.navigation.navigate("Categorias")
+    }
+
   return (
     <ScrollView style={styles.container}>
         <Image style={styles.logo} source={require("../img/LogotipoWhite.png")} />
@@ -29,7 +38,7 @@ const InicioSesion = (props) => {
         <View
             style={styles.buttons}
         >
-            <Button color="#35253A">¡Inicia Sesión!</Button>
+            <Button color="#35253A" onPress={()=> handleInicioSesion()}>¡Inicia Sesión!</Button>
 
             <Button color="#486673" onPress={()=> props.navigation.navigate("Registro")}>¿No tienes una cuenta? Regístrate</Button>
         </View>

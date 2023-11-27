@@ -31,7 +31,7 @@ const EditarPerfil = () => {
         </View>
 
         <View style={styles.boton}>
-          <BtnPrincipal texto={"Confirmar Cambios"}/>
+          <BtnPrincipal texto={"Confirmar Cambios"} handleVisible={()=> console.log("algo")}/>
         </View>
     </View>
   )

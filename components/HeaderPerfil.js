@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 const HeaderPerfil = ({texto}) => {
 
   const navigation = useNavigation();
-  
+ 
   return (
         <View style={styles.contenedor}>
             <StatusBar

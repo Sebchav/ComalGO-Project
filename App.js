@@ -14,23 +14,20 @@ import Perfil from "./screens/Perfil";
 import Footer from "./components/Footer";
 import MisTarjetas from "./screens/MisTarjetas";
 import EditarPerfil from "./screens/EditarPerfil";
-
+import AppState from "./context/app/appState";
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
+    
     <Stack.Navigator>
-      <Stack.Screen
-        name="Categorias"
-        component={Categorias}
-        options={{ headerShown: false }}
-      />
       <Stack.Screen
         name="PantallaInicial"
         component={PantallaInicial}
         options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="Registro"
         component={Registro}
@@ -41,6 +38,13 @@ function MyStack() {
         component={InicioSesion}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="Categorias"
+        component={Categorias}
+        options={{ headerShown: false }}
+      />
+      
       {/* <Stack.Screen name="Categorias" component={Categorias} options={{headerShown: false}}/> */}
 
       <Stack.Screen
@@ -69,11 +73,13 @@ function MyStack() {
       <Stack.Screen name="Status" component={Status} />
 
     </Stack.Navigator>
+  
   );
 }
 
 export default function App() {
   return (
+    <AppState>
     <NavigationContainer>
       <MyStack />
       <StatusBar
@@ -82,6 +88,7 @@ export default function App() {
       />
       <Footer />
     </NavigationContainer>
+    </AppState>
   );
 }
 
