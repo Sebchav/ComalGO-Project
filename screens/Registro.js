@@ -5,8 +5,20 @@ import Platillos from '../components/Platillos'
 import BtnPrincipal from '../components/BtnPrincipal'
 import Alerta from '../components/Alerta'
 import firebase from '../database/firebase'
+import { Icon } from 'react-native-elements';
 
 const Registro = (props) => {
+
+    const [mostrarContraseña, setMostrarContraseña] = useState(false);
+    const [mostrarContraseñaRepetida, setMostrarContraseñaRepetida] = useState(false);
+
+    const toggleMostrarContraseña = () => {
+        setMostrarContraseña(!mostrarContraseña);
+    };
+
+    const toggleMostrarContraseñaRepetida = () => {
+        setMostrarContraseñaRepetida(!mostrarContraseñaRepetida);
+    };
 
     const [alerta, setAlerta] = useState({
         visible: false,
@@ -45,6 +57,43 @@ const Registro = (props) => {
     //     }
     //   };
 
+    const validarCorreo = () => {
+        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!regexCorreo.test(state.correo)) {
+            setAlerta({
+                visible: true,
+                mensaje: 'Por favor, ingresa un correo electrónico válido.',
+                tipo: 'error',
+            });
+
+            limpiarAlerta();
+
+            return false;
+        }
+
+        return true;
+    };
+
+    const validarUsername = () => {
+        // Expresión regular para permitir solo letras y números, y longitud mínima de 6 caracteres
+        const regexUsername = /^[a-zA-Z0-9]{6,}$/;
+
+        if (!regexUsername.test(state.username)) {
+            setAlerta({
+                visible: true,
+                mensaje: 'El nombre de usuario debe contener solo letras y números, y tener al menos 6 caracteres.',
+                tipo: 'error',
+            });
+
+            limpiarAlerta();
+
+            return false;
+        }
+
+        return true;
+    };
+
     const registrarUsuario = async()=>{
         if(Object.values(state).includes('')){
             setAlerta({
@@ -54,6 +103,7 @@ const Registro = (props) => {
             });
 
             limpiarAlerta();
+
 
             return;
         }
@@ -79,6 +129,16 @@ const Registro = (props) => {
 
             limpiarAlerta();
 
+            return;
+        }
+
+        // Validar el formato del correo electrónico
+        if (!validarCorreo()) {
+            return;
+        }
+
+        // Validar el nombre de usuario
+        if (!validarUsername()) {
             return;
         }
 
@@ -117,7 +177,7 @@ const Registro = (props) => {
 
         setTimeout(()=>{
             props.navigation.navigate("InicioSesion")
-        }, 3000)
+        }, 2000)
     }
 
   return (
@@ -150,30 +210,43 @@ const Registro = (props) => {
             onChangeText={(value)=> handleChangeText("username", value)}
         />
 
-        <Input 
-            placeholder='Ingresa tu contraseña'
-            label="Contraseña"
-            value={state.contraseña}
-            style={{paddingHorizontal: 10}}
-            labelStyle={{color: "black", fontWeight: "600"}}
-            inputContainerStyle={{border: "1.5px solid black", borderRadius: 5}}
-            containerStyle={{paddingHorizontal: 0}}
-            onChangeText={(value)=> handleChangeText("contraseña", value)}
-            secureTextEntry={true}
-          
-        />
+            <Input
+                placeholder='Ingresa tu contraseña'
+                label="Contraseña"
+                value={state.contraseña}
+                style={styles.inputPsw}
+                labelStyle={styles.labelPsw}
+                inputContainerStyle={styles.inputContainerPsw}
+                containerStyle={styles.inputContainerPsw}
+                onChangeText={(value) => handleChangeText("contraseña", value)}
+                secureTextEntry={!mostrarContraseña}
+                rightIcon={
+                    <Icon
+                        type="material"
+                        name={mostrarContraseña ? "visibility" : "visibility-off"}
+                        onPress={toggleMostrarContraseña}
+                    />
+                }
+            />
 
-        <Input 
-            placeholder='Confirma tu contraseña'
-            label="Repite tu contraseña"
-            value={state.contraseñaRepetida}
-            style={{paddingHorizontal: 10}}
-            labelStyle={{color: "black", fontWeight: "600"}}
-            inputContainerStyle={{border: "1.5px solid black", borderRadius: 5}}
-            containerStyle={{paddingHorizontal: 0}}
-            onChangeText={(value)=> handleChangeText("contraseñaRepetida", value)}
-            secureTextEntry={true}
-        />
+            <Input
+                placeholder='Confirma tu contraseña'
+                label="Repite tu contraseña"
+                value={state.contraseñaRepetida}
+                style={styles.inputPsw}
+                labelStyle={styles.labelPsw}
+                inputContainerStyle={styles.inputContainerPsw}
+                containerStyle={styles.inputContainerPsw}
+                onChangeText={(value) => handleChangeText("contraseñaRepetida", value)}
+                secureTextEntry={!mostrarContraseñaRepetida}
+                rightIcon={
+                    <Icon
+                        type="material"
+                        name={mostrarContraseñaRepetida ? "visibility" : "visibility-off"}
+                        onPress={toggleMostrarContraseñaRepetida}
+                    />
+                }
+            />
 
         <View
             style={styles.buttons}
@@ -210,7 +283,19 @@ const styles = StyleSheet.create({
     inputText: {
         padding: 0,
         paddingHorizontal: 10
-    }
+    },
+    inputPsw: {
+        paddingHorizontal: 10
+    },
+    labelPsw: {
+        color: "black",
+        fontWeight: "600"
+    },
+    inputContainerPsw: {
+        border: "1.5px solid black",
+        borderRadius: 5,
+        paddingHorizontal: 0
+    },
   });
 
 export default Registro
