@@ -4,6 +4,7 @@ import HeaderPerfil from '../components/HeaderPerfil';
 import BtnPrincipal from '../components/BtnPrincipal';
 
 const EditarPerfil = () => {
+
   return (
     <View>
         <HeaderPerfil texto={"Mi Perfil"}/>

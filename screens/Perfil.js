@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
   },
   containerClickableTextIcon: {
     flexDirection: "row",
-    gap: 5
+    gap: 5,
+    alignItems: "center"
   },
   icono: {
     position: "absolute",

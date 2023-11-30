@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 const HeaderPerfil = ({texto}) => {
-
+  
+  const [ mostrarFlecha, setMostrarFlecha ] = useState(true);
   const navigation = useNavigation();
  
   return (
@@ -14,12 +15,21 @@ const HeaderPerfil = ({texto}) => {
             />
             
             <View style={styles.contenedorFlecha}>
-                <TouchableOpacity
-                    onPress={()=> navigation.navigate("Perfil")}
-                >
-                    <Image style={styles.flecha} source={require("../assets/arrow-left.png")}/>
-                </TouchableOpacity>
-                <Text style={styles.titulo}>{texto}</Text>
+                { mostrarFlecha ? 
+                     <>
+                        <TouchableOpacity
+                        onPress={()=> navigation.navigate("Perfil")}
+                        >
+                        <Image style={styles.flecha} source={require("../assets/arrow-left.png")}/>
+                         </TouchableOpacity>
+                     </> : 
+                     <>
+                        <View>
+                        </View>
+                    </>
+                }
+               
+                <Text style={[styles.titulo, mostrarFlecha == false ? styles.tituloMargin : ""]}>{texto}</Text>
                 <View></View>
             </View>
             
@@ -46,6 +56,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginRight: 40
     },
+    tituloMargin: {
+        marginRight: 4,
+        marginTop: 7
+    }
 })
 
 export default HeaderPerfil

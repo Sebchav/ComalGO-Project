@@ -1,21 +1,33 @@
 import React, {useState} from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native'
 import ModalTarjeta from '../components/ModalTarjeta'
 
 const MisTarjetas = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [ tarjetas, setTarjetas ] = useState([{id:1, numeroTarjeta: 23181384217, fechaExp: "10/24"},
+                                              {id:2, numeroTarjeta: 23481384217, fechaExp: "10/25"},
+                                              {id:3, numeroTarjeta: 42581384217, fechaExp: "10/26"}]);
 
   const handleVisible = () => {
     setModalVisible(!modalVisible);
   };
 
-  const tarjetas = [
-    {id:1, numeroTarjeta: 23181384217, fechaExp: "10/24"},
-    {id:2, numeroTarjeta: 23481384217, fechaExp: "10/25"},
-    {id:3, numeroTarjeta: 42581384217, fechaExp: "10/26"}
-  ]
-  
+  const mostrarAlerta = (id) =>
+    Alert.alert('¿Estás seguro de eliminar esta tarjeta?', 'Esta acción no se podra revertir', [
+      {
+        text: 'Cancelar',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancelar',
+      },
+      {text: 'Confirmar', onPress: () => eliminarTarjeta(id)},
+    ]);
+
+    eliminarTarjeta = (id)=>{
+      const tarjetasActualizadas = tarjetas.filter((tarjeta) => id !== tarjeta.id );
+      setTarjetas(tarjetasActualizadas);
+    }
+
   return (
 
     <View style={styles.contenedorPrincipal}>
@@ -27,6 +39,11 @@ const MisTarjetas = () => {
                 <Image style={styles.imagenTarjeta} source={require("../assets/iconoTarjeta.png")} />
                 <Text>{tarjeta.numeroTarjeta}</Text>
                 <Text>{tarjeta.fechaExp}</Text>
+                <TouchableOpacity
+                  onPress={()=> mostrarAlerta(tarjeta.id)}
+                >
+                  <Image style={styles.xroja} source={require("../assets/xroja.png")} />
+                </TouchableOpacity>
             </View>
           ))
         
@@ -56,7 +73,7 @@ const styles = StyleSheet.create({
   contenedorPrincipal:{
     alignItems: "center",
     justifyContent: "center",
-    gap: 10,
+    gap: 30,
     marginTop: 30
   },
   titulo: {
@@ -84,7 +101,12 @@ const styles = StyleSheet.create({
   contenedorTarjetas:{
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
+  },
+  xroja: {
+    width: 40,
+    height: 40,
+    marginLeft: 10
   }
 })
 
