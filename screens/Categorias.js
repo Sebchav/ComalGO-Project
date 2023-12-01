@@ -12,8 +12,6 @@ const Categorias = () => {
 
   return (
     <SafeAreaView>
-        <Text>Pantalla Categorías</Text>
-
         <View style={styles.categorias}>
           <CategoriasBtn />
         </View>

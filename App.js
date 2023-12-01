@@ -12,22 +12,22 @@ import Status from "./screens/Status";
 import Perfil from "./screens/Perfil";
 
 import Footer from "./components/Footer";
+import MisTarjetas from "./screens/MisTarjetas";
+import EditarPerfil from "./screens/EditarPerfil";
+import AppState from "./context/app/appState";
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
+    
     <Stack.Navigator>
-      <Stack.Screen
-        name="Categorias"
-        component={Categorias}
-        options={{ headerShown: false }}
-      />
       <Stack.Screen
         name="PantallaInicial"
         component={PantallaInicial}
         options={{ headerShown: false }}
       />
+
       <Stack.Screen
         name="Registro"
         component={Registro}
@@ -38,6 +38,13 @@ function MyStack() {
         component={InicioSesion}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="Categorias"
+        component={Categorias}
+        options={{ headerShown: false }}
+      />
+      
       {/* <Stack.Screen name="Categorias" component={Categorias} options={{headerShown: false}}/> */}
 
       <Stack.Screen
@@ -45,20 +52,43 @@ function MyStack() {
         component={Perfil}
         options={{ headerShown: false }}
       />
+
+      <Stack.Screen
+        name="MisTarjetas"
+        component={MisTarjetas}
+        options={{
+          title: "Mis Tarjetas",
+          headerTitleAlign: 'center',
+          headerTintColor: "white",
+          headerStyle: {
+            backgroundColor: "#35253A"
+          },
+          
+        }}
+      />
+
+      <Stack.Screen name="EditarPerfil" component={EditarPerfil} options={{ headerShown: false }}/>
       {/* La pantalla de orden y status SI llevan headerShown */}
       <Stack.Screen name="Orden" component={Orden} />
       <Stack.Screen name="Status" component={Status} />
 
     </Stack.Navigator>
+  
   );
 }
 
 export default function App() {
   return (
+    <AppState>
     <NavigationContainer>
       <MyStack />
+      <StatusBar
+           backgroundColor="white"
+           barStyle="dark-content"
+      />
       <Footer />
     </NavigationContainer>
+    </AppState>
   );
 }
 
