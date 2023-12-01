@@ -2,9 +2,8 @@ import React, {useState} from 'react'
 import { View, Text, StyleSheet, StatusBar, Image, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-const HeaderPerfil = ({texto}) => {
+const HeaderPerfil = ({texto, mostrarFlecha}) => {
   
-  const [ mostrarFlecha, setMostrarFlecha ] = useState(true);
   const navigation = useNavigation();
  
   return (

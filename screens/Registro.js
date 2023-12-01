@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { ScrollView, StyleSheet, Image, View, Alert } from 'react-native'
 import { Input, Text, Button } from '@rneui/themed'
 import Platillos from '../components/Platillos'
@@ -6,8 +6,32 @@ import BtnPrincipal from '../components/BtnPrincipal'
 import Alerta from '../components/Alerta'
 import firebase from '../database/firebase'
 import { Icon } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native'
+import AppContext from '../context/app/appContext'
 
 const Registro = (props) => {
+
+    const {setLogeado} = useContext(AppContext);
+    const navigation = useNavigation();
+  
+  useEffect(() => {
+    const verificarUsuario = async () => {
+      try {
+        // Obtener el valor de idUser desde AsyncStorage
+        const idUser = await AsyncStorage.getItem('id');
+
+        if (idUser) {
+          setLogeado(true);
+          navigation.navigate('Categorias');
+        }
+      } catch (error) {
+        console.error('Error al verificar usuario:', error.message);
+      }
+    };
+
+    verificarUsuario();
+  }, []);
 
     const [mostrarContraseña, setMostrarContraseña] = useState(false);
     const [mostrarContraseñaRepetida, setMostrarContraseñaRepetida] = useState(false);
@@ -152,7 +176,9 @@ const Registro = (props) => {
 
         try{
             await firebase.db.collection("users").add({
-                state
+                correo: state.correo,
+                contraseña: state.contraseña,
+                username: state.username
         });
 
         console.log("usuario almacenado");
