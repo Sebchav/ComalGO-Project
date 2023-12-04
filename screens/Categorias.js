@@ -8,10 +8,12 @@ import AppContext from '../context/app/appContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategoriasBtn from "../components/CategoriasBtn";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from '../components/Toast'
+import firebase from '../database/firebase'
 
 const Categorias = () => {
 
-  const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual} = useContext(AppContext);
+  const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual, setTarjetas} = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [productoActual, setProductoActual] = useState({})
@@ -20,7 +22,8 @@ const Categorias = () => {
 
   
   useEffect(() => {
-    const cargarUsuarioDesdeStorage = async () => {
+    if(!usuarioActual.id){
+      const cargarUsuarioDesdeStorage = async () => {
         try {
             const id = await AsyncStorage.getItem('id');
             const correo = await AsyncStorage.getItem('correo');
@@ -41,7 +44,25 @@ const Categorias = () => {
     };
 
     cargarUsuarioDesdeStorage();
-}, []);  
+    }else{
+      const obtenerDatos = async () => {
+        try {
+          const tarjetasCollection = await firebase.db.collection('tarjetas').where('userId', '==', usuarioActual.id).get();
+          const tarjetasArray = tarjetasCollection.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+  
+          setTarjetas(tarjetasArray);
+        } catch (error) {
+          console.error('Error al obtener datos:', error);
+        }
+      };
+  
+      obtenerDatos();
+    }
+    
+}, [usuarioActual, modalVisible]);  
 
   useEffect(() => {
     if (route.name !== pantallaActual) {
@@ -60,6 +81,8 @@ const Categorias = () => {
         {/* <ModalPlatillo nombrePlatillo={'Ejemplo'} precioPlatillo={'10.00'}/> */}
         {/* <ModalTarjeta /> */}
         <ModalPlatillo nombrePlatillo={"Ejemplo"} precioPlatillo={"10.50"} modalVisible={modalVisible} setModalVisible={setModalVisible} setProductoActual={setProductoActual} productoActual={productoActual}/>
+          
+        <Toast />
     </SafeAreaView>
   );
 };

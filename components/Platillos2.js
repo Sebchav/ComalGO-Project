@@ -1,18 +1,20 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { View, StyleSheet } from 'react-native'
 import PlatilloCard2 from './PlatilloCard2'
 import BtnPrincipal from './BtnPrincipal'
 import { ScrollView } from 'react-native'
+import AppContext from '../context/app/appContext'
+import Producto from './Producto'
 
 const Platillos2 = () => {
+
+  const {orden} = useContext(AppContext);
+
   return ( 
     <ScrollView style={styles.contenedorPlatillos}>
-        <PlatilloCard2 nombrePlatillo={"Ejemplo1"} precio={"$10.40"}/>
-        <PlatilloCard2 nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
-        <PlatilloCard2 nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
-        <PlatilloCard2 nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
-        <PlatilloCard2 nombrePlatillo={"Ejemplo2"} precio={"$10.40"}/>
-
+        {orden.map(producto=>(
+          <PlatilloCard2 id={producto.id} cantidad={producto.cantidad} imagen={producto.imagen} key={producto.id} nombrePlatillo={producto.nombrePlatillo} precio={producto.precio}/>
+        ))}
     </ScrollView>
   )
 }

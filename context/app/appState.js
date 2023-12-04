@@ -4,6 +4,8 @@ import AppContext from './appContext';
 
 const AppState = props => {
 
+    const [tarjetas, setTarjetas] = useState([]);
+    const [toastVisible, setToastVisible] = useState(false);
     const [ logeado, setLogeado ] = useState(false);
     const [usuarioActual, setUsuarioActual] = useState({
         id: "",
@@ -11,6 +13,8 @@ const AppState = props => {
         username: "",
         contraseña: ""
     });
+
+    const [orden, setOrden] = useState([]);
 
     const [pantallaActual, setPantallaActual] = useState("");
 
@@ -22,7 +26,13 @@ const AppState = props => {
                 pantallaActual,
                 setPantallaActual,
                 usuarioActual,
-                setUsuarioActual
+                setUsuarioActual,
+                orden,
+                setOrden,
+                toastVisible, 
+                setToastVisible,
+                tarjetas,
+                setTarjetas
             }}
         >
             {props.children}

@@ -1,10 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Alert, Modal, StyleSheet, Text, View, Image, TextInput,TouchableOpacity} from 'react-native';
 import BtnPrincipal from '../components/BtnPrincipal';
+import AppContext from '../context/app/appContext';
 
-const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVisible, productoActual}) => {
- 
-  const [cantidad, setCantidad] = useState(0);
+const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVisible, productoActual, id}) => {
+  
+  const {orden, setOrden, setToastVisible} = useContext(AppContext);
+
+  const [cantidad, setCantidad] = useState(1);
 
   const handleCantidadPlus = (cantidad)=> {
     if(cantidad==5){
@@ -15,13 +18,43 @@ const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVi
   }
 
   const handleCantidadMinus = (cantidad)=> {
-
-    if(cantidad==0){
+    
+    if(cantidad==1){
         return
     }
     const nuevaCantidad = cantidad-1;
     setCantidad(nuevaCantidad)
   }
+
+  const guardarProducto = () => {
+    setToastVisible(true)
+    const productoExistente = orden.find(item => item.id === productoActual.id);
+  
+    if (productoExistente) {
+      const ordenActualizada = orden.map(item =>
+        item.id === productoActual.id
+          ? { ...item, cantidad: cantidad }
+          : item
+      );
+  
+      setOrden(ordenActualizada);
+    } else {
+    
+      setOrden([
+        ...orden,
+        {
+          id: productoActual.id,
+          imagen: productoActual.imagen,
+          nombrePlatillo: productoActual.nombrePlatillo,
+          precio: productoActual.precio,
+          cantidad,
+        },
+      ]);
+      
+    }
+    setModalVisible(!modalVisible);
+    setCantidad(1)
+  };
 
   return (
     <View style={styles.centeredView}>
@@ -38,7 +71,10 @@ const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVi
             <View style={styles.imgTop}>
                 <View></View>
                 <Image style={styles.imgPlatillo} source={{uri: productoActual.imagen}}/>            
-                <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}> 
+                <TouchableOpacity onPress={() => {
+                  setModalVisible(!modalVisible)
+                  setCantidad(1)
+                }}> 
                     <Image style={styles.imgClose} source={require('../assets/x.png')}/>
                 </TouchableOpacity>
             </View>
@@ -64,17 +100,12 @@ const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVi
 
                 </View>
                 <TouchableOpacity>
-                    <BtnPrincipal texto={'Añadir a la orden'}/>
+                    <BtnPrincipal texto={'Añadir a la orden'} handleVisible={guardarProducto}/>
                 </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-      <TouchableOpacity
-        style={[styles.button, styles.buttonOpen]}
-        onPress={() => setModalVisible(true)}>
-        <Text style={styles.textStyle}>Show Modal</Text>
-      </TouchableOpacity>
     </View>
   );
 };

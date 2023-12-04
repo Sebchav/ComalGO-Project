@@ -16,9 +16,9 @@ import Footer from "./components/Footer";
 import MisTarjetas from "./screens/MisTarjetas";
 import EditarPerfil from "./screens/EditarPerfil";
 import AppState from "./context/app/appState";
+import { ToastProvider } from "react-native-toast-notifications";
 
 const Stack = createNativeStackNavigator();
-
 function MyStack() {
   return (
     
@@ -81,6 +81,11 @@ function MyStack() {
 export default function App() {
 
   return (
+    <ToastProvider
+      style={{marginTop: 50, width: "100%", marginHorizontal: "0", borderRadius: 16}}
+      textStyle={{textAlign: "center", marginHorizontal: 80, color: "#FFF", fontWeight: "bold", fontSize: 18}}
+      successColor="#77C380"
+    >
     <AppState>
     <NavigationContainer>
       <MyStack />
@@ -91,6 +96,7 @@ export default function App() {
       <Footer />
     </NavigationContainer>
     </AppState>
+    </ToastProvider>
   );
 }
 

@@ -1,26 +1,44 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import AppContext from "../context/app/appContext";
 
-const PlatilloCard2 = ({ nombrePlatillo, precio }) => {
-  const [cantidad, setCantidad] = React.useState(1); // Estado para la cantidad de artículos
+const PlatilloCard2 = ({ nombrePlatillo, precio, imagen, cantidad, id}) => {
+
+  const {orden, setOrden} = useContext(AppContext);
+
+  const actualizarCantidad = (id, nuevaCantidad) => {
+    let nuevaOrden;
+
+    if (nuevaCantidad > 0) {
+      // Actualizar la cantidad si es mayor que 0
+      nuevaOrden = orden.map((item) =>
+        item.id === id ? { ...item, cantidad: nuevaCantidad } : item
+      );
+    } else {
+      // Eliminar el producto si la cantidad es 0
+      nuevaOrden = orden.filter((item) => item.id !== id);
+    }
+
+    setOrden(nuevaOrden);
+  };
 
   const restarCantidad = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
+    if (cantidad > 0) {
+      actualizarCantidad(id, cantidad - 1);
     }
   };
 
   const sumarCantidad = () => {
-    setCantidad(cantidad + 1);
+    actualizarCantidad(id, cantidad + 1);
   };
 
   return (
     <View style={styles.contenedorPlatillo}>
       <View style={styles.infoPlatillo}>
-        <Image source={require("../assets/platilloEjemplo.png")} />
+        <Image style={styles.img} source={{uri: imagen }} />
         <View style={styles.textosPlatillo}>
           <Text style={styles.nombrePlatillo}>{nombrePlatillo}</Text>
-          <Text style={styles.precio}>{precio}</Text>
+          <Text style={styles.precio}>${precio}</Text>
         </View>
       </View>
 
@@ -64,7 +82,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   nombrePlatillo: {
-    fontSize: 19,
+    fontSize: 18,
+    width: 120,
     color: "#35253A",
   },
   precio: {
@@ -98,6 +117,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#35253A",
   },
+  img: {
+    width: 100,
+    height: 100
+  }
 });
 
 export default PlatilloCard2;

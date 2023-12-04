@@ -1,95 +1,70 @@
-import React, {useState, useEffect, useContext} from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native'
-import ModalTarjeta from '../components/ModalTarjeta'
-import AppContext from '../context/app/appContext'
-import firebase from '../database/firebase'
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import ModalTarjeta from '../components/ModalTarjeta';
+import AppContext from '../context/app/appContext';
+import firebase from '../database/firebase';
 
 const MisTarjetas = () => {
-
-  const { usuarioActual } = useContext(AppContext);
+  const { usuarioActual, tarjetas, setTarjetas } = useContext(AppContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const [ tarjetas, setTarjetas ] = useState([]);
-
-  useEffect(()=>{
-    const obtenerDatos = async()=>{
-      try {
-        const tarjetasCollection = await firebase.db.collection('tarjetas').where('userId', '==', usuarioActual.id).get();
-        const tarjetasArray = tarjetasCollection.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
   
-        // Actualiza el estado con el array de objetos
-        setTarjetas(tarjetasArray);
-        console.log(tarjetasArray)
-      } catch (error) {
-        console.error('Error al obtener datos:', error);
-      }
-    }
-
-    obtenerDatos()
-    
-  }, [modalVisible])
-
   const handleVisible = () => {
     setModalVisible(!modalVisible);
   };
 
+  const eliminarTarjeta = async (id) => {
+    try {
+      // Elimina la tarjeta de Firestore
+      await firebase.db.collection('tarjetas').doc(id).delete();
+
+      // Actualiza el estado local excluyendo la tarjeta eliminada
+      const tarjetasActualizadas = tarjetas.filter((tarjeta) => id !== tarjeta.id);
+      setTarjetas(tarjetasActualizadas);
+    } catch (error) {
+      console.error('Error al eliminar la tarjeta:', error);
+    }
+  };
+
   const mostrarAlerta = (id) =>
-    Alert.alert('¿Estás seguro de eliminar esta tarjeta?', 'Esta acción no se podra revertir', [
+    Alert.alert('¿Estás seguro de eliminar esta tarjeta?', 'Esta acción no se podrá revertir', [
       {
         text: 'Cancelar',
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancelar',
       },
-      {text: 'Confirmar', onPress: () => eliminarTarjeta(id)},
+      { text: 'Confirmar', onPress: () => eliminarTarjeta(id) },
     ]);
 
-    eliminarTarjeta = (id)=>{
-      const tarjetasActualizadas = tarjetas.filter((tarjeta) => id !== tarjeta.id );
-      setTarjetas(tarjetasActualizadas);
-    }
-
   return (
-
     <View style={styles.contenedorPrincipal}>
-    {tarjetas.length > 0 ? (
-          tarjetas.map((tarjeta) => (
-            <View style={styles.contenedorTarjetas}
-                key={tarjeta.id}
-            >
-                <Image style={styles.imagenTarjeta} source={require("../assets/iconoTarjeta.png")} />
-                <Text>{tarjeta.numeroTarjeta}</Text>
-                <Text>{tarjeta.fechaExp}</Text>
-                <TouchableOpacity
-                  onPress={()=> mostrarAlerta(tarjeta.id)}
-                >
-                  <Image style={styles.xroja} source={require("../assets/xroja.png")} />
-                </TouchableOpacity>
-            </View>
-          ))
-        
-    ) : (
+      {tarjetas.length > 0 ? (
+        tarjetas.map((tarjeta) => (
+          <View style={styles.contenedorTarjetas} key={tarjeta.id}>
+            <Image style={styles.imagenTarjeta} source={require('../assets/iconoTarjeta.png')} />
+            <Text>{tarjeta.numeroTarjeta}</Text>
+            <Text>{tarjeta.fechaExp}</Text>
+            <TouchableOpacity onPress={() => mostrarAlerta(tarjeta.id)}>
+              <Image style={styles.xroja} source={require('../assets/xroja.png')} />
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
         <>
-            <Image style={styles.imagenTarjeta} source={require("../assets/imgTarjeta.png")} />
-            <Text style={styles.titulo}>Todavía no has agregado Tarjetas</Text>
-            <Text style={styles.texto}>Por favor añade una tarjeta {"\n"} de crédito o débito</Text>
-       </>
-    )}
+          <Image style={styles.imagenTarjeta} source={require('../assets/imgTarjeta.png')} />
+          <Text style={styles.titulo}>Todavía no has agregado Tarjetas</Text>
+          <Text style={styles.texto}>Por favor añade una tarjeta {"\n"} de crédito o débito</Text>
+        </>
+      )}
 
-    <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
-       <Image style={styles.imgPlus} source={require("../assets/plus.png")} />
+      <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
+        <Image style={styles.imgPlus} source={require('../assets/plus.png')} />
         <Text style={styles.textoTarj}>Añadir Tarjeta</Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
 
-    <ModalTarjeta
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-    />
-</View>
-
-  )
-}
+      <ModalTarjeta modalVisible={modalVisible} setModalVisible={setModalVisible} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   contenedorPrincipal:{
