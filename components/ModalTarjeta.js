@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Alert,
   Modal,
@@ -10,8 +10,73 @@ import {
   TouchableOpacity,
 } from "react-native";
 import BtnPrincipal from "../components/BtnPrincipal";
+import AppContext from "../context/app/appContext";
+import { useRoute } from "@react-navigation/native";
+import firebase from "../database/firebase";
 
 const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
+
+  const route = useRoute();
+
+  const {usuarioActual} = useContext(AppContext);
+  
+  const [ nuevaTarjeta, setNuevaTarjeta ] = useState({
+    numeroTarjeta: "",
+    titular: "",
+    fechaExp: "",
+    cvv: "",
+  })
+
+  const handleChangeText = (name, value)=>{
+    setNuevaTarjeta({...nuevaTarjeta, [name]: value})
+    console.log(nuevaTarjeta)
+  }
+
+  const handleChangeFechaExp = (value) => {
+    // Limpiar caracteres no numéricos
+    const cleanedValue = value.replace(/[^0-9]/g, '');
+  
+    // Obtener los primeros 4 caracteres (MMYY)
+    const formattedValue = cleanedValue.slice(0, 4);
+  
+    // Aplicar el formato MM/YY
+    if (formattedValue.length <= 2) {
+      setNuevaTarjeta({ ...nuevaTarjeta, fechaExp: formattedValue });
+    } else {
+      setNuevaTarjeta({
+        ...nuevaTarjeta,
+        fechaExp: `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`,
+      });
+    }
+  };
+
+  const limpiarState = ()=>{
+    setNuevaTarjeta({
+      numeroTarjeta: "",
+      titular: "",
+      fechaExp: "",
+      cvv: "",
+    })
+  }
+
+  const guardarTarjeta = async()=>{
+
+    try{
+      await firebase.db.collection("tarjetas").add({
+        numeroTarjeta: nuevaTarjeta.numeroTarjeta,
+        titular: nuevaTarjeta.titular,
+        fechaExp: nuevaTarjeta.fechaExp,
+        cvv: nuevaTarjeta.cvv,
+        userId: usuarioActual.id
+      })
+
+      limpiarState();
+      setModalVisible(false);
+    }catch(error){
+      console.log(error);
+    }
+  }
+  
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -28,7 +93,10 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
             <View style={styles.imgTop}>
               <View></View>
               <Text style={styles.titulo}>Añadir Tarjeta</Text>
-              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <TouchableOpacity onPress={() => {
+                setModalVisible(!modalVisible)
+                limpiarState();
+              }}>
                 <Image
                   style={styles.imgClose}
                   source={require("../assets/x.png")}
@@ -42,6 +110,9 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
                   placeholder="Numero de tarjeta"
                   style={styles.input}
                   inputMode="numeric"
+                  maxLength={16}
+                  value={nuevaTarjeta.numeroTarjeta}
+                  onChangeText={(value)=> handleChangeText("numeroTarjeta", value)}
                 />
                 <Image
                   source={require("../assets/card.png")}
@@ -52,6 +123,8 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
               <TextInput
                 placeholder="Titular de la tarjeta"
                 style={styles.input}
+                value={nuevaTarjeta.titular}
+                onChangeText={(value)=> handleChangeText("titular", value)}
               ></TextInput>
 
               <View style={styles.row}>
@@ -59,19 +132,27 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
                   placeholder="Fecha Exp"
                   style={styles.input2}
                   inputMode="numeric"
+                  maxLength={5}
+                  value={nuevaTarjeta.fechaExp}
+                  onChangeText={(value) => handleChangeFechaExp(value)}
                 ></TextInput>
 
                 <TextInput
                   placeholder="CVV"
                   style={styles.input2}
                   inputMode="numeric"
+                  maxLength={3}
+                  value={nuevaTarjeta.cvv}
+                  onChangeText={(value)=> handleChangeText("cvv", value)}
                 ></TextInput>
               </View>
             </View>
 
             <View style={styles.btnContainer}>
-              <TouchableOpacity>
-                <BtnPrincipal texto={"Pagar"} />
+              <TouchableOpacity
+                onPress={()=> setModalVisible(false)}
+              >
+                <BtnPrincipal texto={route.name == "MisTarjetas" ? "Guardar Tarjeta" : "Pagar"} handleVisible={guardarTarjeta}/>
               </TouchableOpacity>
             </View>
           </View>

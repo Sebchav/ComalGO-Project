@@ -1,13 +1,35 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native'
 import ModalTarjeta from '../components/ModalTarjeta'
+import AppContext from '../context/app/appContext'
+import firebase from '../database/firebase'
 
 const MisTarjetas = () => {
 
+  const { usuarioActual } = useContext(AppContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const [ tarjetas, setTarjetas ] = useState([{id:1, numeroTarjeta: 23181384217, fechaExp: "10/24"},
-                                              {id:2, numeroTarjeta: 23481384217, fechaExp: "10/25"},
-                                              {id:3, numeroTarjeta: 42581384217, fechaExp: "10/26"}]);
+  const [ tarjetas, setTarjetas ] = useState([]);
+
+  useEffect(()=>{
+    const obtenerDatos = async()=>{
+      try {
+        const tarjetasCollection = await firebase.db.collection('tarjetas').where('userId', '==', usuarioActual.id).get();
+        const tarjetasArray = tarjetasCollection.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+  
+        // Actualiza el estado con el array de objetos
+        setTarjetas(tarjetasArray);
+        console.log(tarjetasArray)
+      } catch (error) {
+        console.error('Error al obtener datos:', error);
+      }
+    }
+
+    obtenerDatos()
+    
+  }, [modalVisible])
 
   const handleVisible = () => {
     setModalVisible(!modalVisible);

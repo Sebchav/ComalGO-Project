@@ -7,19 +7,46 @@ import ModalTarjeta from '../components/ModalTarjeta'
 import AppContext from '../context/app/appContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategoriasBtn from "../components/CategoriasBtn";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Categorias = () => {
 
-  const {setPantallaActual, pantallaActual} = useContext(AppContext);
+  const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual} = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [productoActual, setProductoActual] = useState({})
 
   const route = useRoute();
 
+  
+  useEffect(() => {
+    const cargarUsuarioDesdeStorage = async () => {
+        try {
+            const id = await AsyncStorage.getItem('id');
+            const correo = await AsyncStorage.getItem('correo');
+            const username = await AsyncStorage.getItem('username');
+            const contraseña = await AsyncStorage.getItem('contraseña');
+
+            if (id && correo && username && contraseña) {
+                setUsuarioActual({
+                    id,
+                    correo,
+                    username,
+                    contraseña,
+                });
+            }
+        } catch (error) {
+            console.error('Error al cargar usuario desde AsyncStorage:', error.message);
+        }
+    };
+
+    cargarUsuarioDesdeStorage();
+}, []);  
+
   useEffect(() => {
     if (route.name !== pantallaActual) {
       setPantallaActual(route.name);
+   
     }
   }, [route.name, setPantallaActual]);
 

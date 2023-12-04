@@ -5,6 +5,12 @@ import AppContext from './appContext';
 const AppState = props => {
 
     const [ logeado, setLogeado ] = useState(false);
+    const [usuarioActual, setUsuarioActual] = useState({
+        id: "",
+        correo: "",
+        username: "",
+        contraseña: ""
+    });
 
     const [pantallaActual, setPantallaActual] = useState("");
 
@@ -14,7 +20,9 @@ const AppState = props => {
                 logeado,
                 setLogeado,
                 pantallaActual,
-                setPantallaActual
+                setPantallaActual,
+                usuarioActual,
+                setUsuarioActual
             }}
         >
             {props.children}

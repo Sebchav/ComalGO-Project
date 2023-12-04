@@ -12,7 +12,7 @@ const Platillos = ({modalVisible, setModalVisible, productoActual, setProductoAc
     // Función para obtener los datos de Firestore
     const fetchMenuItems = async () => {
       try {
-        const menuCollection = await firebase.db.collection('productos').get();
+        const menuCollection = await firebase.db.collection('productos').where('existencia', '==', true).get();
         const menuArray = menuCollection.docs.map(doc => ({
           id: doc.id,
           ...doc.data()

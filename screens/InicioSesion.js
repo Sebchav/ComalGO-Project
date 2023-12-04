@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InicioSesion = (props) => {
 
-    const {setLogeado} = useContext(AppContext);
+    const {setLogeado, usuarioActual, setUsuarioActual} = useContext(AppContext);
 
     const [alerta, setAlerta] = useState({
         visible: false,
@@ -59,8 +59,15 @@ const InicioSesion = (props) => {
                 await AsyncStorage.setItem('correo', state.correo);
                 await AsyncStorage.setItem('username', username);
                 await AsyncStorage.setItem('contraseña', state.contraseña);
-
+                
+                setUsuarioActual({
+                  id: userId,
+                  correo: state.correo,
+                  username: username,
+                  contraseña: state.contraseña
+                })
                 setLogeado(true);
+                
                 console.log('Inicio de sesión exitoso para el usuario:', state.correo);
                 console.log('ID del documento:', userId);
                 props.navigation.navigate('Categorias');

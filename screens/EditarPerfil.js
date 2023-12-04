@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Text, StyleSheet, Image, TextInput } from 'react-native'
 import HeaderPerfil from '../components/HeaderPerfil';
 import BtnPrincipal from '../components/BtnPrincipal';
+import AppContext from '../context/app/appContext';
 
 const EditarPerfil = () => {
+
+  const { usuarioActual, setUsuarioActual } = useContext(AppContext)
+
+  const handleChangeText = (name, value)=>{
+    setUsuarioActual({...usuarioActual, [name]: value})
+    console.log(usuarioActual);
+}
 
   return (
     <View>
@@ -13,20 +21,30 @@ const EditarPerfil = () => {
             
             <View style={styles.campo}>
               <Text style={styles.label}>Username</Text>
-              <TextInput style={styles.input} placeholder='Ingresa tu username para cambiarlo'></TextInput>
+              <TextInput 
+               style={styles.input} 
+               placeholder='Ingresa tu username para cambiarlo'
+               value={usuarioActual.username}
+               onChangeText={(value)=> handleChangeText("username", value)}
+               ></TextInput>
             </View>
             
             <View style={styles.campo}>
               <Text style={styles.label}>Correo</Text>
-              <TextInput style={styles.input} placeholder='Ingresa tu correo para cambiarlo'></TextInput>
+              <TextInput
+                 style={styles.input}
+                 placeholder='Ingresa tu correo para cambiarlo'
+                 value={usuarioActual.correo}
+                 onChangeText={(value)=> handleChangeText("correo", value)}
+                ></TextInput>
             </View>
             <View style={styles.campo}>
               <Text style={styles.label}>Contraseña Actual</Text>
-              <TextInput style={styles.input} placeholder='Ingresa tu contraseña actual para cambiarla'></TextInput>
+              <TextInput style={styles.input} secureTextEntry={true} placeholder='Ingresa tu contraseña actual para cambiarla'>{usuarioActual.contraseña}</TextInput>
             </View>
             <View style={styles.campo}>
               <Text style={styles.label}>Nueva Contraseña</Text>
-              <TextInput style={styles.input} placeholder='Ingresa tu nueva contraseña'></TextInput>
+              <TextInput style={styles.input} secureTextEntry={true} placeholder='Ingresa tu nueva contraseña'></TextInput>
             </View>
           
         </View>
