@@ -58,7 +58,10 @@ const Categorias = () => {
   return (
     <SafeAreaView style={styles.contenedor}>
         <View style={styles.categorias}>
-          <CategoriasBtn onCategoriaSeleccionada={handleCategoriaSeleccionada} />
+        <CategoriasBtn
+          onCategoriaSeleccionada={handleCategoriaSeleccionada}
+          categoriaSeleccionada={categoriaSeleccionada}
+        />
         </View>
         {/* <Platillos2/> */}
         <Platillos
