@@ -71,15 +71,41 @@ const Registro = (props) => {
         }, 3000)
     }
 
-    // const checkEmailExistence = async (email) => {
-    //     try {
-    //       const querySnapshot = await firebase.db.collection('users').where('correo', '==', state.email).get();
-    //       return !querySnapshot.empty; // Devuelve true si hay resultados (correo ya en uso), false si no hay resultados
-    //     } catch (error) {
-    //       console.error('Error al verificar el correo electrónico:', error);
-    //       throw error;
-    //     }
-    //   };
+    const checkEmailExistence = async (email) => {
+        try {
+            const usersCollection = firebase.db.collection('users');
+            const querySnapshot = await usersCollection.where('correo', '==', email).get();
+    
+            return !querySnapshot.empty; // Devuelve true si hay resultados (correo ya en uso), false si no hay resultados
+        } catch (error) {
+            console.error('Error al verificar el correo electrónico:', error);
+            throw error;
+        }
+    };
+
+
+    const checkUserExistence = async (usuario) => {
+        try {
+            const usersCollection = firebase.db.collection('users');
+            const lowerCaseUsername = usuario.toLowerCase();
+            const querySnapshot = await usersCollection
+                .where('username', '==', lowerCaseUsername)
+                .get();
+    
+            console.log('Username to check:', lowerCaseUsername);
+            console.log('Existing usernames:', querySnapshot.docs.map(doc => doc.data().username));
+    
+            return querySnapshot.size > 0;
+        } catch (error) {
+            console.error('Error al verificar el usuario:', error);
+            throw error;
+        }
+    };
+    
+    
+    
+    
+       
 
     const validarCorreo = () => {
         const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -100,23 +126,34 @@ const Registro = (props) => {
     };
 
     const validarUsername = () => {
-        // Expresión regular para permitir solo letras y números, y longitud mínima de 6 caracteres
-        const regexUsername = /^[a-zA-Z0-9]{6,}$/;
+        
+    const regexCaracteresEspeciales = /^[a-zA-Z0-9]+$/;
 
-        if (!regexUsername.test(state.username)) {
-            setAlerta({
-                visible: true,
-                mensaje: 'El nombre de usuario debe contener solo letras y números, y tener al menos 6 caracteres.',
-                tipo: 'error',
-            });
+    if (state.username.length < 6) {
+        setAlerta({
+            visible: true,
+            mensaje: 'El nombre de usuario debe tener al menos 6 caracteres.',
+            tipo: 'error',
+        });
 
-            limpiarAlerta();
+        limpiarAlerta();
 
-            return false;
-        }
+        return false;
+    } else if (!regexCaracteresEspeciales.test(state.username)) {
+        setAlerta({
+            visible: true,
+            mensaje: 'El nombre de usuario no debe contener caracteres especiales ni espacios.',
+            tipo: 'error',
+        });
 
-        return true;
-    };
+        limpiarAlerta();
+
+        return false;
+    }
+
+    return true;
+};
+
 
     const registrarUsuario = async()=>{
         if(Object.values(state).includes('')){
@@ -156,24 +193,69 @@ const Registro = (props) => {
             return;
         }
 
-        // Validar el formato del correo electrónico
         if (!validarCorreo()) {
             return;
         }
 
-        // Validar el nombre de usuario
         if (!validarUsername()) {
             return;
         }
 
-        // if(checkEmailExistence()){
-        //     console.log("Si hay un usuario registrado con este correo")
-        //     return
-        // }else{
-        //     console.log("correo no usado")
-        //     return
-        // }
+        
+        try {
+            const emailExists = await checkEmailExistence(state.correo.toLowerCase());
+        
+            if (emailExists) {
+                console.log('Correo electrónico ya registrado');
+                setAlerta({
+                    visible: true,
+                    mensaje: "El correo ya está registrado",
+                    tipo: "error"
+                });
+    
+               limpiarAlerta();
+    
+                return;
+            } else {
+                console.log('Correo electrónico disponible');
+            }
+        } catch (error) {
+            console.error('Error al verificar el correo electrónico:', error);
+        }
 
+        try {
+            const lowerCaseInputUsername = state.username.toLowerCase();
+        
+            console.log('Nombre de usuario a verificar:', lowerCaseInputUsername);
+        
+            const usersCollection = firebase.db.collection('users');
+            const querySnapshot = await usersCollection.get();
+        
+            const userExists = querySnapshot.docs.some(doc => {
+                const lowerCaseDBUsername = doc.data().username.toLowerCase();
+                return lowerCaseDBUsername === lowerCaseInputUsername;
+            });
+        
+            if (userExists) {
+                console.log('Nombre de usuario no disponible');
+                setAlerta({
+                    visible: true,
+                    mensaje: "El nombre de usuario no está disponible",
+                    tipo: "error"
+                });
+        
+                limpiarAlerta();
+        
+                return;
+            } else {
+                console.log('Nombre de usuario disponible');
+            }
+        
+        } catch (error) {
+            console.error('Error al verificar el usuario:', error);
+        }
+        
+        
         try{
             await firebase.db.collection("users").add({
                 correo: state.correo,
@@ -185,7 +267,6 @@ const Registro = (props) => {
         }catch(error){
             console.log(error);
         }
-        
         setAlerta({
             visible: true,
             mensaje: "Registro exitoso",
