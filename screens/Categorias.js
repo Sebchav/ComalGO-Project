@@ -13,6 +13,7 @@ const Categorias = () => {
   const {setPantallaActual, pantallaActual} = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [productoActual, setProductoActual] = useState({})
 
   const route = useRoute();
 
@@ -28,10 +29,10 @@ const Categorias = () => {
           <CategoriasBtn />
         </View>
         {/* <Platillos2/> */}
-        <Platillos modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+        <Platillos modalVisible={modalVisible} setModalVisible={setModalVisible} setProductoActual={setProductoActual} productoActual={productoActual}/>
         {/* <ModalPlatillo nombrePlatillo={'Ejemplo'} precioPlatillo={'10.00'}/> */}
         {/* <ModalTarjeta /> */}
-        <ModalPlatillo nombrePlatillo={"Ejemplo"} precioPlatillo={"10.50"} modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+        <ModalPlatillo nombrePlatillo={"Ejemplo"} precioPlatillo={"10.50"} modalVisible={modalVisible} setModalVisible={setModalVisible} setProductoActual={setProductoActual} productoActual={productoActual}/>
     </SafeAreaView>
   );
 };

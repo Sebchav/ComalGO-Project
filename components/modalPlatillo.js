@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Modal, StyleSheet, Text, View, Image, TextInput,TouchableOpacity} from 'react-native';
 import BtnPrincipal from '../components/BtnPrincipal';
 
-const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVisible}) => {
+const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVisible, productoActual}) => {
  
   const [cantidad, setCantidad] = useState(0);
 
@@ -37,14 +37,14 @@ const ModalPlatillo = ({nombrePlatillo, precioPlatillo, modalVisible, setModalVi
           <View style={styles.modalView}>
             <View style={styles.imgTop}>
                 <View></View>
-                <Image style={styles.imgPlatillo} source={require('../assets/platilloEjemplo.png')}/>            
+                <Image style={styles.imgPlatillo} source={{uri: productoActual.imagen}}/>            
                 <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}> 
                     <Image style={styles.imgClose} source={require('../assets/x.png')}/>
                 </TouchableOpacity>
             </View>
             <View style={styles.dataCont}>
-                <Text style={styles.nombrePlatillo}> {nombrePlatillo}</Text>
-                <Text style={styles.precioPlatillo}> ${precioPlatillo}</Text>
+                <Text style={styles.nombrePlatillo}> {productoActual.nombrePlatillo}</Text>
+                <Text style={styles.precioPlatillo}> ${productoActual.precio}</Text>
             </View>
             <View style={styles.inputCont}>
                 <Text style={styles.textoComentario}> Agrega un comentario</Text>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     borderColor: '#666687'
   },
   nombrePlatillo:{
-    fontSize:25,
+    fontSize:22,
     color: '#32324D',
   },
   precioPlatillo:{
@@ -168,8 +168,9 @@ const styles = StyleSheet.create({
     color: '#666687',
   },
   imgPlatillo:{
-    width: 150,
-    height:150,
+    width: 130,
+    height:130,
+    marginBottom: 10,
     marginLeft: 50,
   },
 });
