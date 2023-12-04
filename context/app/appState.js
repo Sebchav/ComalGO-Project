@@ -6,11 +6,15 @@ const AppState = props => {
 
     const [ logeado, setLogeado ] = useState(false);
 
+    const [pantallaActual, setPantallaActual] = useState("");
+
     return (
         <AppContext.Provider
             value={{
                 logeado,
-                setLogeado
+                setLogeado,
+                pantallaActual,
+                setPantallaActual
             }}
         >
             {props.children}

@@ -1,12 +1,11 @@
 import React, {useState, useContext} from 'react'
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation} from '@react-navigation/native'
 import AppContext from '../context/app/appContext'
 
 const Footer = () => {
 
-  const { logeado } = useContext(AppContext);
-  const [pantallaActual, setPantallaActual] = useState("Categorias");
+  const { logeado, pantallaActual, setPantallaActual } = useContext(AppContext);
 
   const navigation = useNavigation();
 

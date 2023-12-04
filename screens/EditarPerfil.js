@@ -7,7 +7,7 @@ const EditarPerfil = () => {
 
   return (
     <View>
-        <HeaderPerfil texto={"Mi Perfil"}/>
+        <HeaderPerfil texto={"Mi Perfil"} mostrarFlecha={true}/>
         <Image style={styles.icono} source={require("../assets/iconoPerfil.png")}/>
         <View style={styles.form}>
             

@@ -1,24 +1,71 @@
-import React from "react";
+import React, {useState, useEffect, useContext} from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderPerfil from '../components/HeaderPerfil';
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppContext from "../context/app/appContext";
 
 const Perfil = () => {
 
+  const {setLogeado} = useContext(AppContext);
+
+  const [username, setUsername] = useState('');
+  const [correo, setCorreo] = useState('');
+
+  useEffect(() => {
+    // Obtener el username al cargar el componente
+    obtenerUsernameDesdeAsyncStorage();
+    obtenerCorreo();
+  }, []);
+
+  const obtenerUsernameDesdeAsyncStorage = async () => {
+    try {
+      const usernameStored = await AsyncStorage.getItem('username');
+      setUsername(usernameStored || '');
+    } catch (error) {
+      console.error('Error al obtener el username desde AsyncStorage:', error.message);
+    }
+  };
+
+  const obtenerCorreo = async () => {
+    try {
+      const usernameCorreo = await AsyncStorage.getItem('correo');
+      setCorreo(usernameCorreo || '');
+    } catch (error) {
+      console.error('Error al obtener el correo desde AsyncStorage:', error.message);
+    }
+  };
+
   const navigation = useNavigation();
+
+  const cerrarSesion = async () => {
+    try {
+      // Eliminar los valores de AsyncStorage
+      await AsyncStorage.removeItem('id');
+      await AsyncStorage.removeItem('correo');
+      await AsyncStorage.removeItem('username');
+      await AsyncStorage.removeItem('contraseña');
+
+      // Redirigir a la pantalla de registro
+      setLogeado(false);
+      navigation.navigate('Registro');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error.message);
+    }
+  };
 
   return (
     <View style={styles.contenedorPrincipal}>
-      <HeaderPerfil texto={"Mi Perfil"} />
+      <HeaderPerfil texto={"Mi Perfil"} mostrarFlecha={false} />
       <Image
         style={styles.icono}
         source={require("../assets/iconoPerfil.png")}
       />
       <View style={styles.contenedor}>
         <Text style={styles.titulo}> Información del perfil</Text>
-        <Text style={styles.texto}> Nombre Usuario </Text>
-        <Text style={styles.texto}> Correo usuario</Text>
+        <Text style={[styles.texto, styles.info]}> Nombre Usuario: {username}</Text>
+        <Text style={[styles.texto, styles.info]}> Correo: {correo}</Text>
 
         <TouchableOpacity
               onPress={() => navigation.navigate("EditarPerfil")}
@@ -58,6 +105,16 @@ const Perfil = () => {
           </View>
           <Image source={require("../assets/flechaDerecha.png")} />
         </View>
+
+        <TouchableOpacity style={[styles.containerClickableText, styles.marginTop]}
+          onPress={()=> cerrarSesion()}
+        >
+          <View style={styles.containerClickableTextIcon}>
+            <Text style={styles.texto}>Cerrar Sesión</Text>
+          </View>
+          <Image style={styles.exit}  source={require("../assets/exit.png")} />
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -69,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   texto : {
-    fontSize: 16,
+    fontSize: 18,
   },
   contenedor: {
     marginHorizontal: "4%",
@@ -92,6 +149,13 @@ const styles = StyleSheet.create({
     left: 115,
     height: 160,
     width:160,
+  },
+  marginTop : {
+    marginTop: 100,
+    marginLeft: 4
+  },
+  info: {
+    
   }
 });
 
