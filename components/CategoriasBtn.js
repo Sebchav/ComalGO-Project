@@ -2,20 +2,21 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import BtnCategoria from './BtnCategoria';
 
-const CategoriasBtn = () => {
+const CategoriasBtn = ({ onCategoriaSeleccionada }) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <BtnCategoria nombreCategoria={"Comidas"} />
-        <BtnCategoria nombreCategoria={"Desayunos"} />
+        <BtnCategoria nombreCategoria={"Comidas"} onPress={() => onCategoriaSeleccionada("Comidas")} />
+        <BtnCategoria nombreCategoria={"Desayunos"} onPress={() => onCategoriaSeleccionada("Desayunos")} />
       </View>
       <View style={styles.row}>
-        <BtnCategoria nombreCategoria={"Bebidas"} />
-        <BtnCategoria nombreCategoria={"Cafetería"} />
+        <BtnCategoria nombreCategoria={"Bebidas"} onPress={() => onCategoriaSeleccionada("Bebidas")} />
+        <BtnCategoria nombreCategoria={"Cafetería"} onPress={() => onCategoriaSeleccionada("Cafetería")} />
       </View>
     </View>
   );
 };
+
 
 const styles = {
   container: {

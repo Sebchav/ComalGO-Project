@@ -10,11 +10,16 @@ import CategoriasBtn from "../components/CategoriasBtn";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Categorias = () => {
-
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual} = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [productoActual, setProductoActual] = useState({})
+
+  const handleCategoriaSeleccionada = (categoria) => {
+    console.log("Categoría seleccionada:", categoria);
+    setCategoriaSeleccionada(categoria);
+  };
 
   const route = useRoute();
 
@@ -53,10 +58,16 @@ const Categorias = () => {
   return (
     <SafeAreaView style={styles.contenedor}>
         <View style={styles.categorias}>
-          <CategoriasBtn />
+          <CategoriasBtn onCategoriaSeleccionada={handleCategoriaSeleccionada} />
         </View>
         {/* <Platillos2/> */}
-        <Platillos modalVisible={modalVisible} setModalVisible={setModalVisible} setProductoActual={setProductoActual} productoActual={productoActual}/>
+        <Platillos
+          categoriaSeleccionada={categoriaSeleccionada}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          productoActual={productoActual}
+          setProductoActual={setProductoActual}
+        />
         {/* <ModalPlatillo nombrePlatillo={'Ejemplo'} precioPlatillo={'10.00'}/> */}
         {/* <ModalTarjeta /> */}
         <ModalPlatillo nombrePlatillo={"Ejemplo"} precioPlatillo={"10.50"} modalVisible={modalVisible} setModalVisible={setModalVisible} setProductoActual={setProductoActual} productoActual={productoActual}/>
