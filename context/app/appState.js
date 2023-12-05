@@ -15,6 +15,10 @@ const AppState = props => {
     });
 
     const [orden, setOrden] = useState([]);
+    const [ordenConfirmada, setOrdenConfirmada] = useState({
+        orden: [],
+        total: ""
+    });
 
     const [pantallaActual, setPantallaActual] = useState("");
 
@@ -32,7 +36,9 @@ const AppState = props => {
                 toastVisible, 
                 setToastVisible,
                 tarjetas,
-                setTarjetas
+                setTarjetas,
+                ordenConfirmada,
+                setOrdenConfirmada
             }}
         >
             {props.children}

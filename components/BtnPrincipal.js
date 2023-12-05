@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const BtnPrincipal = ({ texto, handleVisible }) => {
+const BtnPrincipal = ({ texto, handleVisible, disabled = false }) => {
   return (
-    <TouchableOpacity style={styles.contenedorBtn} onPress={() => handleVisible()}>
+    <TouchableOpacity disabled={disabled} style={styles.contenedorBtn} onPress={() => handleVisible()}>
       <Text style={styles.textoBtn}>{texto}</Text>
     </TouchableOpacity>
   );

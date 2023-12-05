@@ -8,72 +8,55 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import BtnPrincipal from "../components/BtnPrincipal";
 import AppContext from "../context/app/appContext";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import firebase from "../database/firebase";
+import Producto from "./Producto";
 
 const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
 
+  const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState(null);
+
+  const navigation = useNavigation();
   const route = useRoute();
 
-  const {usuarioActual} = useContext(AppContext);
+  const {usuarioActual, tarjetas, orden, setOrden, pantallaActual, setPantallaActual, setOrdenConfirmada} = useContext(AppContext);
   
-  const [ nuevaTarjeta, setNuevaTarjeta ] = useState({
-    numeroTarjeta: "",
-    titular: "",
-    fechaExp: "",
-    cvv: "",
-  })
-
-  const handleChangeText = (name, value)=>{
-    setNuevaTarjeta({...nuevaTarjeta, [name]: value})
-    console.log(nuevaTarjeta)
-  }
-
-  const handleChangeFechaExp = (value) => {
-    // Limpiar caracteres no numéricos
-    const cleanedValue = value.replace(/[^0-9]/g, '');
-  
-    // Obtener los primeros 4 caracteres (MMYY)
-    const formattedValue = cleanedValue.slice(0, 4);
-  
-    // Aplicar el formato MM/YY
-    if (formattedValue.length <= 2) {
-      setNuevaTarjeta({ ...nuevaTarjeta, fechaExp: formattedValue });
-    } else {
-      setNuevaTarjeta({
-        ...nuevaTarjeta,
-        fechaExp: `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`,
-      });
-    }
+  const handleTarjetaPress = (tarjetaId) => {
+    setTarjetaSeleccionada(tarjetaId);
   };
 
-  const limpiarState = ()=>{
-    setNuevaTarjeta({
-      numeroTarjeta: "",
-      titular: "",
-      fechaExp: "",
-      cvv: "",
-    })
-  }
-
   const guardarTarjeta = async()=>{
+    if(route.name == "Orden"){
+      const total = orden.reduce((acumulador, producto) => {
+        return acumulador + (parseInt(producto.precio)*parseInt(producto.cantidad));
+      }, 0);
 
-    try{
-      await firebase.db.collection("tarjetas").add({
-        numeroTarjeta: nuevaTarjeta.numeroTarjeta,
-        titular: nuevaTarjeta.titular,
-        fechaExp: nuevaTarjeta.fechaExp,
-        cvv: nuevaTarjeta.cvv,
-        userId: usuarioActual.id
-      })
 
-      limpiarState();
-      setModalVisible(false);
-    }catch(error){
-      console.log(error);
+      try{
+        await firebase.db.collection("orders").add({
+          orden,
+          total,
+          usuario: {
+            id: usuarioActual.id,
+            username: usuarioActual.username
+          },
+          status: 0
+        })
+
+        setOrdenConfirmada({
+          orden: orden,
+          total: total
+        })
+        setOrden([]);   
+        setPantallaActual("Status")
+        navigation.navigate("Status");
+      }catch(error){
+        console.log(error)
+      }
     }
   }
   
@@ -92,10 +75,10 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
           <View style={styles.modalView}>
             <View style={styles.imgTop}>
               <View></View>
-              <Text style={styles.titulo}>Añadir Tarjeta</Text>
+              <Text style={styles.titulo}>Elige tu método de pago</Text>
               <TouchableOpacity onPress={() => {
                 setModalVisible(!modalVisible)
-                limpiarState();
+               
               }}>
                 <Image
                   style={styles.imgClose}
@@ -103,50 +86,29 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
                 />
               </TouchableOpacity>
             </View>
+            
+            <View style={styles.contenedorMaximo}>
+            {tarjetas.map((tarjeta) => (
+            <TouchableOpacity style={styles.contenedorTarjetas} key={tarjeta.id} onPress={() => handleTarjetaPress(tarjeta.id)}>
+              <Image style={styles.imagenTarjeta} source={require('../assets/iconoTarjeta.png')} />
+              <Text>{tarjeta.numeroTarjeta}</Text>
+              <Text>{tarjeta.fechaExp}</Text>
+              <View onPress={() => handleTarjetaPress(tarjeta.id)} style={[
+              styles.radioButton,
+              {
+                backgroundColor:
+                  tarjeta.id === tarjetaSeleccionada ? '#BABABA' : 'transparent',
+              },
+            ]}
+              ></View>
+            </TouchableOpacity>
+          ))}
 
-            <View style={styles.formCont}>
-              <View style={styles.cardNumberContainer}>
-                <TextInput
-                  placeholder="Numero de tarjeta"
-                  style={styles.input}
-                  inputMode="numeric"
-                  maxLength={16}
-                  value={nuevaTarjeta.numeroTarjeta}
-                  onChangeText={(value)=> handleChangeText("numeroTarjeta", value)}
-                />
-                <Image
-                  source={require("../assets/card.png")}
-                  style={styles.cardImage}
-                />
-              </View>
-
-              <TextInput
-                placeholder="Titular de la tarjeta"
-                style={styles.input}
-                value={nuevaTarjeta.titular}
-                onChangeText={(value)=> handleChangeText("titular", value)}
-              ></TextInput>
-
-              <View style={styles.row}>
-                <TextInput
-                  placeholder="Fecha Exp"
-                  style={styles.input2}
-                  inputMode="numeric"
-                  maxLength={5}
-                  value={nuevaTarjeta.fechaExp}
-                  onChangeText={(value) => handleChangeFechaExp(value)}
-                ></TextInput>
-
-                <TextInput
-                  placeholder="CVV"
-                  style={styles.input2}
-                  inputMode="numeric"
-                  maxLength={3}
-                  value={nuevaTarjeta.cvv}
-                  onChangeText={(value)=> handleChangeText("cvv", value)}
-                ></TextInput>
-              </View>
-            </View>
+          <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
+                  <Image style={styles.imgPlus} source={require('../assets/plus.png')} />
+                  <Text style={styles.textoTarj}>Añadir Tarjeta</Text>
+          </TouchableOpacity>
+          </View>
 
             <View style={styles.btnContainer}>
               <TouchableOpacity
@@ -167,7 +129,7 @@ const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "flex-end",
-    alignItems: "center",
+    alignItems: "space-around",
     marginTop: 50,
   },
   modalView: {
@@ -177,6 +139,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 460,
     alignItems: "center",
+    justifyContent: "space-around",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -269,6 +232,37 @@ const styles = StyleSheet.create({
   cardImage: {
     position: "absolute",
     right: 20,
+  },
+  contenedorTarjetas: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 10
+  },
+  radioButton:{
+    backgroundColor: "white",
+    width: 30,
+    height: 30,
+    marginLeft: 15,
+    borderRadius: 100,
+    borderWidth: 2
+  },
+  contenedorMaximo:{
+    gap: 10
+  },
+  addNew: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    marginTop: 20
+  },
+  textoTarj:{
+    fontSize: 18,
+  },
+  imgPlus:{
+    height:35,
+    width:35,
   },
 });
 

@@ -6,10 +6,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BtnPrincipal from "../components/BtnPrincipal";
 import AppContext from "../context/app/appContext";
 import { useRoute } from '@react-navigation/native'
-import TarjetasOpciones from "../components/TarjetasOpciones";
+import TarjetasOpciones from "../components/TarjetasOpciones.js";
 
 const Orden = () => {
-  const { setPantallaActual, pantallaActual, orden, setOrden, tarjetas } = useContext(AppContext);
+  const { setPantallaActual, pantallaActual, orden, setOrden, tarjetas} = useContext(AppContext);
   const [modalVisible, setModalVisible] = useState(false);
   const route = useRoute();
 

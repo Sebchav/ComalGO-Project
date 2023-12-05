@@ -1,25 +1,35 @@
-import React from "react";
+import React, {useContext} from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Productos from "../components/Productos";
+import AppContext from "../context/app/appContext";
 
 const Status = () => {
-  const tiempoAproximado = 10;
-  const total = 50;
+
+  const { ordenConfirmada } = useContext(AppContext);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>
-        Tu orden estará lista en aproximadamente {"\n"}
-        <Text style={styles.tiempo}>{tiempoAproximado} minutos</Text>
-      </Text>
+      {ordenConfirmada.orden.length !== 0 ? 
+        <>
+          <Text style={styles.titulo}>
+            Tu orden estará lista en aproximadamente {"\n"}
+            <Text style={styles.tiempo}>{5*ordenConfirmada.orden.length} minutos</Text>
+          </Text>
 
-      <View style={styles.contenedorPrincipal}>
-        <Text style={styles.textoProductos}>Tus Productos</Text>
-        <Productos />
-        <View style={styles.contenedorTotal}>
-          <Text style={styles.textoTotal}>Total</Text>
-          <Text style={styles.textoCantidad}>${total}</Text>
+          <View style={styles.contenedorPrincipal}>
+            <Text style={styles.textoProductos}>Tus Productos</Text>
+            <Productos />
+            <View style={styles.contenedorTotal}>
+              <Text style={styles.textoTotal}>Total</Text>
+              <Text style={styles.textoCantidad}>${ordenConfirmada.total}</Text>
+            </View>
+          </View>
+        </>
+        :
+        <View style={styles.textoSinProductos}>
+          <Text style={styles.noProducts}>No hay ordenes disponibles</Text>
         </View>
-      </View>
+      }
     </View>
   );
 };
@@ -64,6 +74,19 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1
+  },
+  textoSinProductos: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 10
+  },
+  noProducts: {
+    color: "#BABABA",
+    fontSize: 28,
+    marginHorizontal: 20,
+    textAlign: "center",
+    marginTop: -120
   }
 });
 

@@ -1,13 +1,13 @@
 import React from "react";
 import { View, Image, StyleSheet, Text } from "react-native";
 
-const Producto = ({ nombreProducto, cantidad, precio }) => {
+const Producto = ({ nombreProducto, cantidad, precio, imagen }) => {
   return (
     <View style={styles.container}>
       <View style={styles.contenedorIzq}>
         <Image
           style={styles.imgProducto}
-          source={require("../assets/platilloEjemplo.png")}
+          source={{uri: imagen}}
         />
         <Text style={styles.nombreProducto}>{nombreProducto}</Text>
       </View>
@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
   },
   nombreProducto: {
     fontSize: 17,
+    width: 200,
+    textAlign: "left",
     color: "#32324D",
   },
   contenedorIzq: {
