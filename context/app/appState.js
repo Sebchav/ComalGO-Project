@@ -21,6 +21,7 @@ const AppState = props => {
     });
 
     const [pantallaActual, setPantallaActual] = useState("");
+    const [ordenActual, setOrdenActual] = useState([]);
 
     return (
         <AppContext.Provider
@@ -38,7 +39,9 @@ const AppState = props => {
                 tarjetas,
                 setTarjetas,
                 ordenConfirmada,
-                setOrdenConfirmada
+                setOrdenConfirmada,
+                ordenActual,
+                setOrdenActual
             }}
         >
             {props.children}

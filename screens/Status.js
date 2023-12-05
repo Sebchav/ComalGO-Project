@@ -1,29 +1,35 @@
 import React, {useContext} from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Productos from "../components/Productos";
+import ListaOrdenes from "../components/ListaOrdenes";
 import AppContext from "../context/app/appContext";
+import Productos from "../components/Productos";
 
 const Status = () => {
 
-  const { ordenConfirmada } = useContext(AppContext);
+  const { ordenConfirmada, ordenActual } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
       {ordenConfirmada.orden.length !== 0 ? 
-        <>
-          <Text style={styles.titulo}>
-            Tu orden estará lista en aproximadamente {"\n"}
-            <Text style={styles.tiempo}>{5*ordenConfirmada.orden.length} minutos</Text>
-          </Text>
+         <>
+           <Text style={styles.titulo}>
+             Tu orden estará lista en aproximadamente {"\n"}
+             <Text style={styles.tiempo}>{5*ordenConfirmada.orden.length} minutos</Text>
+           </Text>
 
-          <View style={styles.contenedorPrincipal}>
-            <Text style={styles.textoProductos}>Tus Productos</Text>
-            <Productos />
-            <View style={styles.contenedorTotal}>
-              <Text style={styles.textoTotal}>Total</Text>
-              <Text style={styles.textoCantidad}>${ordenConfirmada.total}</Text>
-            </View>
-          </View>
+           <View style={styles.contenedorPrincipal}>
+             <Text style={styles.textoProductos}>Tus Productos</Text>
+             <Productos />
+             <View style={styles.contenedorTotal}>
+               <Text style={styles.textoTotal}>Total</Text>
+               <Text style={styles.textoCantidad}>${ordenActual.total}</Text>
+             </View>
+           </View>
+         
+         {!ordenActual[0] && (
+             <ListaOrdenes />
+         )}
+       
         </>
         :
         <View style={styles.textoSinProductos}>

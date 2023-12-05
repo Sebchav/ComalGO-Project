@@ -23,7 +23,7 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const {usuarioActual, tarjetas, orden, setOrden, pantallaActual, setPantallaActual, setOrdenConfirmada} = useContext(AppContext);
+  const {usuarioActual, tarjetas, orden, setOrden, pantallaActual, setPantallaActual, setOrdenConfirmada, ordenConfirmada} = useContext(AppContext);
   
   const handleTarjetaPress = (tarjetaId) => {
     setTarjetaSeleccionada(tarjetaId);
@@ -35,11 +35,13 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
         return acumulador + (parseInt(producto.precio)*parseInt(producto.cantidad));
       }, 0);
 
+      const idOrden = Date.now();
 
       try{
         await firebase.db.collection("orders").add({
           orden,
           total,
+          idOrden,
           usuario: {
             id: usuarioActual.id,
             username: usuarioActual.username
@@ -48,9 +50,9 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
         })
 
         setOrdenConfirmada({
-          orden: orden,
-          total: total
+          orden: [...ordenConfirmada.orden, { ...orden, total, status: 0, idOrden }],
         })
+
         setOrden([]);   
         setPantallaActual("Status")
         navigation.navigate("Status");
