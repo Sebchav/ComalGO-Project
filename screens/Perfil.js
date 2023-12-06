@@ -8,32 +8,35 @@ import AppContext from "../context/app/appContext";
 
 const Perfil = () => {
 
-  const {setLogeado} = useContext(AppContext);
+  const { setLogeado, usuarioActual, setUsuarioActual } = useContext(AppContext);
 
   const [username, setUsername] = useState('');
   const [correo, setCorreo] = useState('');
 
   useEffect(() => {
-    // Obtener el username al cargar el componente
-    obtenerUsernameDesdeAsyncStorage();
+    console.log('usuarioActual en Perfil:', usuarioActual);
     obtenerCorreo();
-  }, []);
+  }, [usuarioActual]);
 
-  const obtenerUsernameDesdeAsyncStorage = async () => {
-    try {
-      const usernameStored = await AsyncStorage.getItem('username');
-      setUsername(usernameStored || '');
-    } catch (error) {
-      console.error('Error al obtener el username desde AsyncStorage:', error.message);
-    }
-  };
+  // const obtenerUsernameDesdeAsyncStorage = async () => {
+  //   try {
+  //     const usernameStored = await AsyncStorage.getItem('username');
+  //     setUsername(usernameStored || '');
+  //   } catch (error) {
+  //     console.error('Error al obtener el username desde AsyncStorage:', error.message);
+  //   }
+  // };
 
   const obtenerCorreo = async () => {
     try {
+      // Obtener el correo desde AsyncStorage (si es necesario)
       const usernameCorreo = await AsyncStorage.getItem('correo');
       setCorreo(usernameCorreo || '');
+
+      // Obtener el nombre de usuario desde el estado global (usuarioActual)
+      setUsername(usuarioActual.username);
     } catch (error) {
-      console.error('Error al obtener el correo desde AsyncStorage:', error.message);
+      console.error('Error al obtener datos en el perfil:', error.message);
     }
   };
 
@@ -46,6 +49,11 @@ const Perfil = () => {
       await AsyncStorage.removeItem('correo');
       await AsyncStorage.removeItem('username');
       await AsyncStorage.removeItem('contraseña');
+
+      setUsuarioActual({
+        ...usuarioActual,
+        username: usuarioActual.nuevaUsername, 
+      });
 
       // Redirigir a la pantalla de registro
       setLogeado(false);
@@ -97,14 +105,14 @@ const Perfil = () => {
           </View>
         </TouchableOpacity>
 
-        <Text style={styles.titulo}> Preferencias</Text>
+        {/* <Text style={styles.titulo}> Preferencias</Text>
         <View style={styles.containerClickableText}>
           <View style={styles.containerClickableTextIcon}>
             <Image source={require("../assets/iconoModoOscuroOutlined.png")} />
             <Text style={styles.texto}> Modo oscuro</Text>
           </View>
           <Image source={require("../assets/flechaDerecha.png")} />
-        </View>
+        </View> */}
 
         <TouchableOpacity style={[styles.containerClickableText, styles.marginTop]}
           onPress={()=> cerrarSesion()}
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
     width:160,
   },
   marginTop : {
-    marginTop: 100,
+    marginTop: 210,
     marginLeft: 4
   },
   info: {
