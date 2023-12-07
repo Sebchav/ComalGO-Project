@@ -12,9 +12,19 @@ const Productos = () => {
       {/* <Producto nombreProducto={"Ejemplo"} cantidad={2} precio={10} />
       <Producto nombreProducto={"Ejemplo"} cantidad={2} precio={10} />
       <Producto nombreProducto={"Ejemplo"} cantidad={2} precio={10} /> */}
-      {ordenActual.map((producto, index)=>(
-        <Producto imagen={producto[index].imagen} key={producto.id} nombreProducto={producto.nombrePlatillo} cantidad={producto.cantidad} precio={producto.precio}/>
-      ))}
+      {Object.values(ordenActual[0])
+      .filter(propiedad => typeof propiedad !== 'number')  // Filtra propiedades no numéricas
+      .map((producto, index) => (
+        <Producto
+          imagen={producto.imagen}
+          key={producto.id}
+          nombreProducto={producto.nombrePlatillo}
+          cantidad={producto.cantidad}
+          precio={producto.precio}
+        />
+      ))
+    }
+
     </View>
   )
 };

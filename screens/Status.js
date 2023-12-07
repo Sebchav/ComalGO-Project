@@ -1,20 +1,28 @@
 import React, {useContext} from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import ListaOrdenes from "../components/ListaOrdenes";
 import AppContext from "../context/app/appContext";
 import Productos from "../components/Productos";
 
 const Status = () => {
 
-  const { ordenConfirmada, ordenActual } = useContext(AppContext);
+  const { ordenConfirmada, ordenActual, setOrdenActual } = useContext(AppContext);
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.regresar}
+        onPress={()=> setOrdenActual({})}
+      >
+        <Text>Regresar</Text>
+      </TouchableOpacity>
       {ordenConfirmada.orden.length !== 0 ? 
          <>
-           <Text style={styles.titulo}>
+
+         {ordenActual[0] && (
+          <>
+             <Text style={styles.titulo}>
              Tu orden estará lista en aproximadamente {"\n"}
-             <Text style={styles.tiempo}>{5*ordenConfirmada.orden.length} minutos</Text>
+             <Text style={styles.tiempo}>{5*(Object.keys(ordenActual[0]).length-3)} minutos</Text>
            </Text>
 
            <View style={styles.contenedorPrincipal}>
@@ -22,9 +30,12 @@ const Status = () => {
              <Productos />
              <View style={styles.contenedorTotal}>
                <Text style={styles.textoTotal}>Total</Text>
-               <Text style={styles.textoCantidad}>${ordenActual.total}</Text>
+               <Text style={styles.textoCantidad}>${ordenActual[0].total}</Text>
              </View>
            </View>
+           </>
+         )}
+          
          
          {!ordenActual[0] && (
              <ListaOrdenes />
@@ -79,7 +90,8 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "white",
-    flex: 1
+    flex: 1,
+    marginTop: 25
   },
   textoSinProductos: {
     flex: 1,
@@ -93,6 +105,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     textAlign: "center",
     marginTop: -120
+  },
+  regresar: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: "red",
+    
   }
 });
 
