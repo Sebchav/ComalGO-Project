@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import ListaOrdenes from "../components/ListaOrdenes";
 import AppContext from "../context/app/appContext";
 import Productos from "../components/Productos";
@@ -10,11 +10,15 @@ const Status = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.regresar}
+
+      {ordenActual[0] && (
+        <TouchableOpacity style={styles.regresar}
         onPress={()=> setOrdenActual({})}
       >
-        <Text>Regresar</Text>
-      </TouchableOpacity>
+        <Image source={require("../assets/arrow-left-black.png")}/>
+        </TouchableOpacity>
+      )}
+      
       {ordenConfirmada.orden.length !== 0 ? 
          <>
 
@@ -108,9 +112,8 @@ const styles = StyleSheet.create({
   },
   regresar: {
     marginTop: 20,
-    padding: 10,
-    backgroundColor: "red",
-    
+    padding: 1,
+    marginHorizontal: 15,
   }
 });
 

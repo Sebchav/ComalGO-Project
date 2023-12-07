@@ -70,7 +70,7 @@ function MyStack() {
 
       <Stack.Screen name="EditarPerfil" component={EditarPerfil} options={{ headerShown: false }}/>
       {/* La pantalla de orden y status SI llevan headerShown */}
-      <Stack.Screen name="Orden" component={Orden} />
+      <Stack.Screen name="Orden"  component={Orden} />
       <Stack.Screen name="Status"  options={{ headerShown: false }} component={Status} />
 
     </Stack.Navigator>

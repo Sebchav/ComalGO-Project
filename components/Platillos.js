@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
     contenedorPlatillos: {
         gap: 20,
         marginTop: 10,
-        maxHeight: "80%"
+        minHeight: "80%",
+        
     }
 })
 

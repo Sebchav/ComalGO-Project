@@ -12,9 +12,15 @@ import AppContext from '../context/app/appContext'
 
 const Registro = (props) => {
 
-    const {setLogeado} = useContext(AppContext);
+    const {setLogeado, pantallaActual} = useContext(AppContext);
     const navigation = useNavigation();
-  
+
+    useEffect(()=>{
+        if(pantallaActual){
+          navigation.navigate("Categorias")
+        }
+      }, [navigation.navigate])
+
   useEffect(() => {
     const verificarUsuario = async () => {
       try {

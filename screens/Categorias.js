@@ -13,7 +13,7 @@ import firebase from '../database/firebase'
 
 const Categorias = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
-  const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual} = useContext(AppContext);
+  const {setPantallaActual, pantallaActual, usuarioActual, setUsuarioActual, setTarjetas, setOrdenConfirmada, orden, ordenConfirmada} = useContext(AppContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [productoActual, setProductoActual] = useState({})
@@ -25,7 +25,12 @@ const Categorias = () => {
 
   const route = useRoute();
 
-  
+  useEffect(()=>{
+    if(pantallaActual){
+      navi
+    }
+  }, [route.name])
+
   useEffect(() => {
     if(!usuarioActual.id){
       const cargarUsuarioDesdeStorage = async () => {
@@ -63,8 +68,49 @@ const Categorias = () => {
           console.error('Error al obtener datos:', error);
         }
       };
+
+      const obtenerOrdenes = async () => {
+        try {
+          const ordenesCollection = await firebase.db.collection('orders').where('usuario.id', '==', usuarioActual.id).get();
+          const ordenesArray = ordenesCollection.docs.map((doc) => ({
+            ...doc.data(),
+          }));
+
+          setOrdenConfirmada({
+            orden: ordenesArray.map((order) => ({
+              ...order.orden,
+              total: order.total || 0,
+              status: order.status || 0,
+              idOrden: order.idOrden || '',
+            })),
+          });
+
+          // try{
+          //   await firebase.db.collection("orders").add({
+          //     orden,
+          //     total,
+          //     idOrden,
+          //     usuario: {
+          //       id: usuarioActual.id,
+          //       username: usuarioActual.username
+          //     },
+          //     status: 0
+          //   })
+    
+          //   setOrdenConfirmada({
+          //     orden: [...ordenConfirmada.orden, { ...orden, total, status: 0, idOrden }],
+          //   })
+
+          
+  
+          console.log(ordenesArray);
+        } catch (error) {
+          console.error('Error al obtener datos:', error);
+        }
+      };
   
       obtenerDatos();
+      obtenerOrdenes();
     }
     
 }, [usuarioActual, modalVisible]);  
@@ -108,7 +154,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   contenedor: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    flex: 1
   }
 })
 

@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginVertical: 6,
-        marginHorizontal: 4,
+        marginHorizontal: 13,
         alignItems: 'center',
         borderRadius: 10,
         padding: 10,
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     },
     nombrePlatillo: {
         fontSize: 19,
-        color: "#35253A"
+        color: "#35253A",
+        width: 150
     },
     precio: {
         color: "#35253A",

@@ -11,18 +11,28 @@ const Platillos2 = () => {
   const {orden} = useContext(AppContext);
 
   return ( 
+    <View style={styles.container}>
     <ScrollView style={styles.contenedorPlatillos}>
         {orden.map(producto=>(
           <PlatilloCard2 id={producto.id} cantidad={producto.cantidad} imagen={producto.imagen} key={producto.id} nombrePlatillo={producto.nombrePlatillo} precio={producto.precio}/>
         ))}
     </ScrollView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
     contenedorPlatillos: {
         gap: 20,
-        maxHeight: "86%"
+        maxHeight: "100%",
+        marginBottom: 10
+    },
+    container: {
+      width: "98%",
+      maxHeight: "77%",
+      borderRightWidth: 2,
+      
+      borderColor: "#BABABA"
     }
 })
 
