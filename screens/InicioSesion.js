@@ -4,11 +4,23 @@ import { Input, Text, Button } from '@rneui/themed'
 import AppContext from '../context/app/appContext'
 import firebase from '../database/firebase'
 import Alerta from '../components/Alerta'
+import { Icon } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InicioSesion = (props) => {
 
     const {setLogeado, usuarioActual, setUsuarioActual} = useContext(AppContext);
+
+    const [mostrarContraseña, setMostrarContraseña] = useState(false);
+    const [mostrarContraseñaRepetida, setMostrarContraseñaRepetida] = useState(false);
+
+    const toggleMostrarContraseña = () => {
+        setMostrarContraseña(!mostrarContraseña);
+    };
+
+    const toggleMostrarContraseñaRepetida = () => {
+        setMostrarContraseñaRepetida(!mostrarContraseñaRepetida);
+    };
 
     const [alerta, setAlerta] = useState({
         visible: false,
@@ -113,17 +125,24 @@ const InicioSesion = (props) => {
             onChangeText={(value)=> handleChangeText("correo", value)}
         />
 
-        <Input 
-            placeholder='Ingresa tu contraseña'
-            label="Contraseña"
-            secureTextEntry={true}
-            style={{paddingHorizontal: 10}}
-            labelStyle={{color: "black", fontWeight: "600"}}
-            inputContainerStyle={{border: "1.5px solid black", borderRadius: 5}}
-            containerStyle={{paddingHorizontal: 0}}
-            value={state.contraseña}
-            onChangeText={(value)=> handleChangeText("contraseña", value)}
-        />
+              <Input
+                placeholder='Ingresa tu contraseña'
+                label="Contraseña"
+                value={state.contraseña}
+                style={styles.inputPsw}
+                labelStyle={styles.labelPsw}
+                inputContainerStyle={styles.inputContainerPsw}
+                containerStyle={styles.inputContainerPsw}
+                onChangeText={(value) => handleChangeText("contraseña", value)}
+                secureTextEntry={!mostrarContraseña}
+                rightIcon={
+                    <Icon
+                        type="material"
+                        name={mostrarContraseña ? "visibility" : "visibility-off"}
+                        onPress={toggleMostrarContraseña}
+                    />
+                }
+              />
 
         <View
             style={styles.buttons}
@@ -159,7 +178,19 @@ const styles = StyleSheet.create({
     inputText: {
         padding: 0,
         paddingHorizontal: 10
-    }
+    },
+    inputPsw: {
+        paddingHorizontal: 10
+    },
+    labelPsw: {
+        color: "black",
+        fontWeight: "600"
+    },
+    inputContainerPsw: {
+        border: "1.5px solid black",
+        borderRadius: 5,
+        paddingHorizontal: 0
+    },
   });
 
 export default InicioSesion
