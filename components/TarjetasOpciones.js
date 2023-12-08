@@ -16,52 +16,79 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import firebase from "../database/firebase";
 import Producto from "./Producto";
 
+
+// Componente ModalTarjeta que muestra un modal para seleccionar y guardar tarjetas de pago
 const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
-
+  // Estado para almacenar la tarjeta seleccionada
   const [tarjetaSeleccionada, setTarjetaSeleccionada] = useState(null);
+  const { toastVisible2, setToastVisible2 } = useContext(AppContext);
 
+  // Hooks de navegación y rutas de React Navigation
   const navigation = useNavigation();
   const route = useRoute();
 
-  const {usuarioActual, tarjetas, orden, setOrden, pantallaActual, setPantallaActual, setOrdenConfirmada, ordenConfirmada} = useContext(AppContext);
-  
+  // Contexto de la aplicación
+  const {
+    usuarioActual,
+    tarjetas,
+    orden,
+    setOrden,
+    pantallaActual,
+    setPantallaActual,
+    setOrdenConfirmada,
+    ordenConfirmada,
+  } = useContext(AppContext);
+
+  // Maneja la acción cuando se presiona una tarjeta
   const handleTarjetaPress = (tarjetaId) => {
     setTarjetaSeleccionada(tarjetaId);
   };
 
-  const guardarTarjeta = async()=>{
-    if(route.name == "Orden"){
+  // Guarda la orden con la tarjeta seleccionada
+  const guardarTarjeta = async () => {
+    if (route.name === "Orden") {
+      // Calcula el total de la orden sumando el precio de cada producto
       const total = orden.reduce((acumulador, producto) => {
-        return acumulador + (parseInt(producto.precio)*parseInt(producto.cantidad));
+        return acumulador + parseInt(producto.precio) * parseInt(producto.cantidad);
       }, 0);
 
+      // Genera un ID único para la orden
       const idOrden = Date.now();
 
-      try{
+      try {
+        // Guarda la orden en la base de datos
         await firebase.db.collection("orders").add({
           orden,
           total,
           idOrden,
           usuario: {
             id: usuarioActual.id,
-            username: usuarioActual.username
+            username: usuarioActual.username,
           },
-          status: 0
-        })
+          status: 0,
+        });
 
+        // Actualiza el estado de la orden confirmada en el contexto
         setOrdenConfirmada({
           orden: [...ordenConfirmada.orden, { ...orden, total, status: 0, idOrden }],
-        })
+        });
 
-        setOrden([]);   
-        setPantallaActual("Status")
+        setToastVisible2(true)
+        // Limpia la orden actual en el contexto
+        setOrden([]);
+        // Cambia la pantalla actual y navega a la pantalla de estado
+        setPantallaActual("Status");
         navigation.navigate("Status");
-      }catch(error){
-        console.log(error)
+      } catch (error) {
+        console.log(error);
       }
     }
-  }
-  
+  };
+
+  const handleVisible = () => {
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -75,58 +102,69 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            {/* Encabezado del modal */}
             <View style={styles.imgTop}>
               <View></View>
               <Text style={styles.titulo}>Elige tu método de pago</Text>
-              <TouchableOpacity onPress={() => {
-                setModalVisible(!modalVisible)
-               
-              }}>
-                <Image
-                  style={styles.imgClose}
-                  source={require("../assets/x.png")}
-                />
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Image style={styles.imgClose} source={require("../assets/x.png")} />
               </TouchableOpacity>
             </View>
-            
+
+            {/* Contenedor de tarjetas */}
             <View style={styles.contenedorMaximo}>
-            {tarjetas.map((tarjeta) => (
-            <TouchableOpacity style={styles.contenedorTarjetas} key={tarjeta.id} onPress={() => handleTarjetaPress(tarjeta.id)}>
-              <Image style={styles.imagenTarjeta} source={require('../assets/iconoTarjeta.png')} />
-              <Text>{tarjeta.numeroTarjeta}</Text>
-              <Text>{tarjeta.fechaExp}</Text>
-              <View onPress={() => handleTarjetaPress(tarjeta.id)} style={[
-              styles.radioButton,
-              {
-                backgroundColor:
-                  tarjeta.id === tarjetaSeleccionada ? '#BABABA' : 'transparent',
-              },
-            ]}
-              ></View>
-            </TouchableOpacity>
-          ))}
+              {tarjetas.map((tarjeta) => (
+                <TouchableOpacity
+                  style={styles.contenedorTarjetas}
+                  key={tarjeta.id}
+                  onPress={() => handleTarjetaPress(tarjeta.id)}
+                >
+                  <Image
+                    style={styles.imagenTarjeta}
+                    source={require("../assets/iconoTarjeta.png")}
+                  />
+                  <Text>{tarjeta.numeroTarjeta}</Text>
+                  <Text>{tarjeta.fechaExp}</Text>
+                  {/* Radio button para indicar la tarjeta seleccionada */}
+                  <View
+                    onPress={() => handleTarjetaPress(tarjeta.id)}
+                    style={[
+                      styles.radioButton,
+                      {
+                        backgroundColor:
+                          tarjeta.id === tarjetaSeleccionada ? "#BABABA" : "transparent",
+                      },
+                    ]}
+                  ></View>
+                </TouchableOpacity>
+              ))}
 
-          <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
-                  <Image style={styles.imgPlus} source={require('../assets/plus.png')} />
-                  <Text style={styles.textoTarj}>Añadir Tarjeta</Text>
-          </TouchableOpacity>
-          </View>
+              {/* Botón para añadir nueva tarjeta */}
+              {/* <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
+                <Image style={styles.imgPlus} source={require("../assets/plus.png")} />
+                <Text style={styles.textoTarj}>Añadir Tarjeta</Text>
+              </TouchableOpacity> */}
+            </View>
 
+            {/* Contenedor de botones */}
             <View style={styles.btnContainer}>
-              <TouchableOpacity
-                onPress={()=> setModalVisible(false)}
-              >
-                <BtnPrincipal texto={route.name == "MisTarjetas" ? "Guardar Tarjeta" : "Pagar"} handleVisible={guardarTarjeta}/>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                {/* Botón para cerrar el modal */}
+                <BtnPrincipal texto={route.name === "MisTarjetas" ? "Guardar Tarjeta" : "Pagar"} handleVisible={guardarTarjeta} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-      
     </View>
   );
 };
 
+// Estilos para el componente ModalTarjeta
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -151,12 +189,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#32324D",
-  },
   imgTop: {
     flexDirection: "row",
     alignItems: "center",
@@ -170,101 +202,45 @@ const styles = StyleSheet.create({
     height: 60,
     resizeMode: "contain",
   },
-  dataCont: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "80%",
-  },
-  buttons: {
-    flexDirection: "row",
-    gap: 50,
-    marginTop: 40,
-    alignItems: "center",
-  },
-  btn: {
-    width: 40,
-    height: 40,
-  },
-  cantidad: {
-    fontSize: 25,
-  },
-  inputCont: {
-    width: "80%",
-    marginTop: 30,
+  contenedorMaximo: {
     gap: 10,
-  },
-  titulo: {
-    marginLeft: 15,
-    fontSize: 25,
-    color: "#32324D",
-  },
-  input: {
-    padding: 20,
-    borderWidth: 0.5,
-    borderRadius: 20,
-    marginVertical: 12,
-    width: "100%",
-    borderColor: "#666687",
-  },
-  input2: {
-    padding: 20,
-    borderWidth: 1,
-    borderRadius: 20,
-    marginVertical: 12,
-    width: "47%",
-    borderWidth: 0.5,
-    borderColor: "#666687",
-  },
-  formCont: {
-    width: "80%",
-  },
-  row: {
-    flexDirection: "row",
-    gap: 20,
-  },
-  btnContainer: {
-    width: "80%",
-    marginTop: 20,
-  },
-  cardNumberContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-  },
-  cardImage: {
-    position: "absolute",
-    right: 20,
   },
   contenedorTarjetas: {
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    gap: 10
+    gap: 10,
   },
-  radioButton:{
+  radioButton: {
     backgroundColor: "white",
     width: 30,
     height: 30,
     marginLeft: 15,
     borderRadius: 100,
-    borderWidth: 2
-  },
-  contenedorMaximo:{
-    gap: 10
+    borderWidth: 2,
   },
   addNew: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    marginTop: 20
+    marginTop: 20,
   },
-  textoTarj:{
+  textoTarj: {
     fontSize: 18,
   },
-  imgPlus:{
-    height:35,
-    width:35,
+  imgPlus: {
+    height: 35,
+    width: 35,
+  },
+  btnContainer: {
+    width: "80%",
+    marginTop: 20,
+  },
+  titulo: {
+    marginLeft: 15,
+    fontSize: 25,
+    color: "#32324D",
   },
 });
 
