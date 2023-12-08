@@ -2,6 +2,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyAw0090ZABO8fL4DpvNpsTVFroh_F11UhQ",
     authDomain: "comalgo-93c58.firebaseapp.com",
@@ -12,11 +13,14 @@ const firebaseConfig = {
     measurementId: "G-W5RRCHVB6Q"
 };
   
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+// Inicializa Firebase con la configuración
+firebase.initializeApp(firebaseConfig);
 
-  export default {
+// Obtiene la instancia de Firestore
+const db = firebase.firestore();
+
+// Exporta el objeto con las instancias de firebase y firestore
+export default {
     firebase,
     db
-}
+};

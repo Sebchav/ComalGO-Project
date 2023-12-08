@@ -1,74 +1,100 @@
-import React, {useState} from 'react'
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native'
-import ModalTarjeta from '../components/ModalTarjeta'
+// Importaciones de React y Hooks para gestionar el estado y efectos secundarios
+import React, { useState, useEffect, useContext } from 'react';
 
+// Importaciones de componentes de React Native para la interfaz de usuario
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+
+// Importación del componente ModalTarjeta desde la ubicación especificada
+import ModalTarjeta from '../components/ModalTarjeta';
+
+// Importación del contexto de la aplicación desde la ubicación especificada
+import AppContext from '../context/app/appContext';
+
+// Importación de la instancia de Firebase desde la ubicación especificada
+import firebase from '../database/firebase';
+
+// Componente funcional MisTarjetas
 const MisTarjetas = () => {
-
+  // Acceso al estado global y funciones a través del contexto de la aplicación
+  const { usuarioActual, tarjetas, setTarjetas } = useContext(AppContext);
+  // Estado local para gestionar la visibilidad del modal de tarjeta
   const [modalVisible, setModalVisible] = useState(false);
-  const [ tarjetas, setTarjetas ] = useState([{id:1, numeroTarjeta: 23181384217, fechaExp: "10/24"},
-                                              {id:2, numeroTarjeta: 23481384217, fechaExp: "10/25"},
-                                              {id:3, numeroTarjeta: 42581384217, fechaExp: "10/26"}]);
 
+  // Función para alternar la visibilidad del modal de tarjeta
   const handleVisible = () => {
     setModalVisible(!modalVisible);
   };
 
+  // Función para eliminar una tarjeta
+  const eliminarTarjeta = async (id) => {
+    try {
+      // Elimina la tarjeta de Firestore
+      await firebase.db.collection('tarjetas').doc(id).delete();
+
+      // Actualiza el estado local excluyendo la tarjeta eliminada
+      const tarjetasActualizadas = tarjetas.filter((tarjeta) => id !== tarjeta.id);
+      setTarjetas(tarjetasActualizadas);
+    } catch (error) {
+      console.error('Error al eliminar la tarjeta:', error);
+    }
+  };
+
+  // Función para mostrar una alerta de confirmación antes de eliminar una tarjeta
   const mostrarAlerta = (id) =>
-    Alert.alert('¿Estás seguro de eliminar esta tarjeta?', 'Esta acción no se podra revertir', [
+    Alert.alert('¿Estás seguro de eliminar esta tarjeta?', 'Esta acción no se podrá revertir', [
       {
         text: 'Cancelar',
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancelar',
       },
-      {text: 'Confirmar', onPress: () => eliminarTarjeta(id)},
+      { text: 'Confirmar', onPress: () => eliminarTarjeta(id) },
     ]);
 
-    eliminarTarjeta = (id)=>{
-      const tarjetasActualizadas = tarjetas.filter((tarjeta) => id !== tarjeta.id );
-      setTarjetas(tarjetasActualizadas);
-    }
-
+  // Renderizado del componente
   return (
-
+    // Contenedor principal que agrupa la visualización de las tarjetas, el botón para añadir una nueva tarjeta
+    // y el componente ModalTarjeta para ingresar información de una nueva tarjeta.
     <View style={styles.contenedorPrincipal}>
-    {tarjetas.length > 0 ? (
-          tarjetas.map((tarjeta) => (
-            <View style={styles.contenedorTarjetas}
-                key={tarjeta.id}
-            >
-                <Image style={styles.imagenTarjeta} source={require("../assets/iconoTarjeta.png")} />
-                <Text>{tarjeta.numeroTarjeta}</Text>
-                <Text>{tarjeta.fechaExp}</Text>
-                <TouchableOpacity
-                  onPress={()=> mostrarAlerta(tarjeta.id)}
-                >
-                  <Image style={styles.xroja} source={require("../assets/xroja.png")} />
-                </TouchableOpacity>
-            </View>
-          ))
-        
-    ) : (
+      {/* Verifica si existen tarjetas en el estado local */}
+      {tarjetas.length > 0 ? (
+        // Mapea sobre las tarjetas existentes y muestra la información de cada una
+        tarjetas.map((tarjeta) => (
+          <View style={styles.contenedorTarjetas} key={tarjeta.numeroTarjeta}>
+            {/* Imagen de la tarjeta */}
+            <Image style={styles.imagenTarjeta} source={require('../assets/iconoTarjeta.png')} />
+            {/* Número de la tarjeta */}
+            <Text>{tarjeta.numeroTarjeta}</Text>
+            {/* Fecha de expiración de la tarjeta */}
+            <Text>{tarjeta.fechaExp}</Text>
+            {/* Botón de eliminación de la tarjeta */}
+            <TouchableOpacity onPress={() => mostrarAlerta(tarjeta.id)}>
+              <Image style={styles.xroja} source={require('../assets/xroja.png')} />
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
+        // Si no existen tarjetas, muestra una imagen predeterminada y un mensaje informativo
         <>
-            <Image style={styles.imagenTarjeta} source={require("../assets/imgTarjeta.png")} />
-            <Text style={styles.titulo}>Todavía no has agregado Tarjetas</Text>
-            <Text style={styles.texto}>Por favor añade una tarjeta {"\n"} de crédito o débito</Text>
-       </>
-    )}
+          <Image style={styles.imagenTarjeta} source={require('../assets/imgTarjeta.png')} />
+          <Text style={styles.titulo}>Todavía no has agregado Tarjetas</Text>
+          <Text style={styles.texto}>Por favor añade una tarjeta {"\n"} de crédito o débito</Text>
+        </>
+      )}
 
-    <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
-       <Image style={styles.imgPlus} source={require("../assets/plus.png")} />
+      {/* Botón para añadir una nueva tarjeta con un ícono y un texto */}
+      <TouchableOpacity style={styles.addNew} onPress={() => handleVisible()}>
+        <Image style={styles.imgPlus} source={require('../assets/plus.png')} />
         <Text style={styles.textoTarj}>Añadir Tarjeta</Text>
-    </TouchableOpacity>
+      </TouchableOpacity>
 
-    <ModalTarjeta
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-    />
-</View>
+      {/* Componente ModalTarjeta para ingresar información de una nueva tarjeta */}
+      <ModalTarjeta modalVisible={modalVisible} setModalVisible={setModalVisible} />
+    </View>
 
-  )
-}
+  );
+};
 
+// Estilos del componente
 const styles = StyleSheet.create({
   contenedorPrincipal:{
     alignItems: "center",
@@ -110,4 +136,5 @@ const styles = StyleSheet.create({
   }
 })
 
-export default MisTarjetas
+// Exportación del componente MisTarjetas
+export default MisTarjetas;

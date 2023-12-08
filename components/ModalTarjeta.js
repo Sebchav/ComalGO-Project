@@ -1,34 +1,99 @@
-import React, { useState } from "react";
-import {
-  Alert,
-  Modal,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import React, { useState, useContext } from "react";
+import { Alert, Modal, StyleSheet, Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import BtnPrincipal from "../components/BtnPrincipal";
+import AppContext from "../context/app/appContext";
+import { useRoute } from "@react-navigation/native";
+import firebase from "../database/firebase";
 
+// Componente funcional ModalTarjeta para agregar o pagar con tarjetas
 const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
+  // Obtener la ruta actual
+  const route = useRoute();
+
+  // Obtener variables y funciones del contexto de la aplicación
+  const { usuarioActual, setTarjetas, tarjetas } = useContext(AppContext);
+
+  // Estado local para la información de la nueva tarjeta
+  const [nuevaTarjeta, setNuevaTarjeta] = useState({
+    numeroTarjeta: "",
+    titular: "",
+    fechaExp: "",
+    cvv: "",
+  });
+
+  // Función para manejar cambios en los campos de texto
+  const handleChangeText = (name, value) => {
+    setNuevaTarjeta({ ...nuevaTarjeta, [name]: value });
+  };
+
+  // Función para manejar cambios en la fecha de expiración
+  const handleChangeFechaExp = (value) => {
+    // Limpiar caracteres no numéricos
+    const cleanedValue = value.replace(/[^0-9]/g, '');
+
+    // Obtener los primeros 4 caracteres (MMYY)
+    const formattedValue = cleanedValue.slice(0, 4);
+
+    // Aplicar el formato MM/YY
+    if (formattedValue.length <= 2) {
+      setNuevaTarjeta({ ...nuevaTarjeta, fechaExp: formattedValue });
+    } else {
+      setNuevaTarjeta({
+        ...nuevaTarjeta,
+        fechaExp: `${formattedValue.slice(0, 2)}/${formattedValue.slice(2)}`,
+      });
+    }
+  };
+
+  // Función para limpiar el estado local
+  const limpiarState = () => {
+    setNuevaTarjeta({
+      numeroTarjeta: "",
+      titular: "",
+      fechaExp: "",
+      cvv: "",
+    });
+  };
+
+  // Función para guardar la tarjeta en la base de datos
+  const guardarTarjeta = async () => {
+    try {
+      await firebase.db.collection("tarjetas").add({
+        numeroTarjeta: nuevaTarjeta.numeroTarjeta,
+        titular: nuevaTarjeta.titular,
+        fechaExp: nuevaTarjeta.fechaExp,
+        cvv: nuevaTarjeta.cvv,
+        userId: usuarioActual.id,
+      });
+
+      setTarjetas([...tarjetas, nuevaTarjeta])
+      // Limpiar el estado local y cerrar el modal
+      limpiarState();
+      setModalVisible(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
+    // Vista modal para agregar o pagar con tarjetas
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
+       
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            {/* Encabezado del modal con título y botón de cerrar */}
             <View style={styles.imgTop}>
               <View></View>
               <Text style={styles.titulo}>Añadir Tarjeta</Text>
-              <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
+              <TouchableOpacity onPress={() => {
+                setModalVisible(!modalVisible)
+                limpiarState();
+              }}>
                 <Image
                   style={styles.imgClose}
                   source={require("../assets/x.png")}
@@ -36,12 +101,17 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
               </TouchableOpacity>
             </View>
 
+            {/* Contenedor del formulario */}
             <View style={styles.formCont}>
+              {/* Contenedor del número de tarjeta con imagen de tarjeta */}
               <View style={styles.cardNumberContainer}>
                 <TextInput
                   placeholder="Numero de tarjeta"
                   style={styles.input}
                   inputMode="numeric"
+                  maxLength={16}
+                  value={nuevaTarjeta.numeroTarjeta}
+                  onChangeText={(value) => handleChangeText("numeroTarjeta", value)}
                 />
                 <Image
                   source={require("../assets/card.png")}
@@ -49,39 +119,52 @@ const ModalTarjeta = ({ modalVisible, setModalVisible }) => {
                 />
               </View>
 
+              {/* Campo de texto para el titular de la tarjeta */}
               <TextInput
                 placeholder="Titular de la tarjeta"
                 style={styles.input}
+                value={nuevaTarjeta.titular}
+                onChangeText={(value) => handleChangeText("titular", value)}
               ></TextInput>
 
+              {/* Contenedor de la fila de fecha de expiración y CVV */}
               <View style={styles.row}>
+                {/* Campo de texto para la fecha de expiración */}
                 <TextInput
                   placeholder="Fecha Exp"
                   style={styles.input2}
                   inputMode="numeric"
+                  maxLength={5}
+                  value={nuevaTarjeta.fechaExp}
+                  onChangeText={(value) => handleChangeFechaExp(value)}
                 ></TextInput>
 
+                {/* Campo de texto para el CVV */}
                 <TextInput
                   placeholder="CVV"
                   style={styles.input2}
                   inputMode="numeric"
+                  maxLength={3}
+                  value={nuevaTarjeta.cvv}
+                  onChangeText={(value) => handleChangeText("cvv", value)}
                 ></TextInput>
               </View>
             </View>
 
+            {/* Contenedor del botón principal para guardar la tarjeta */}
             <View style={styles.btnContainer}>
-              <TouchableOpacity>
-                <BtnPrincipal texto={"Pagar"} />
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <BtnPrincipal texto={route.name == "MisTarjetas" ? "Guardar Tarjeta" : "Pagar"} handleVisible={guardarTarjeta} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-      
     </View>
   );
 };
 
+// Estilos del componente ModalTarjeta
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
@@ -104,12 +187,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    backgroundColor: "#32324D",
   },
   imgTop: {
     flexDirection: "row",
@@ -191,4 +268,5 @@ const styles = StyleSheet.create({
   },
 });
 
+// Exportar el componente ModalTarjeta como componente predeterminado
 export default ModalTarjeta;

@@ -1,44 +1,74 @@
-import React, {useState} from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import AppContext from "../context/app/appContext";
 
-const PlatilloCard2 = ({ nombrePlatillo, precio }) => {
-  const [cantidad, setCantidad] = React.useState(1); // Estado para la cantidad de artículos
+// Componente funcional PlatilloCard2 para mostrar información de un platillo en una tarjeta con opciones de cantidad
+const PlatilloCard2 = ({ nombrePlatillo, precio, imagen, cantidad, id }) => {
+  // Obteniendo funciones y estado del contexto de la aplicación
+  const { orden, setOrden } = useContext(AppContext);
 
+  // Función para actualizar la cantidad de un platillo en la orden
+  const actualizarCantidad = (id, nuevaCantidad) => {
+    let nuevaOrden;
+
+    if (nuevaCantidad > 0) {
+      // Actualizar la cantidad si es mayor que 0
+      nuevaOrden = orden.map((item) =>
+        item.id === id ? { ...item, cantidad: nuevaCantidad } : item
+      );
+    } else {
+      // Eliminar el producto si la cantidad es 0
+      nuevaOrden = orden.filter((item) => item.id !== id);
+    }
+
+    setOrden(nuevaOrden);
+  };
+
+  // Función para restar la cantidad de un platillo en la orden
   const restarCantidad = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
+    if (cantidad > 0) {
+      actualizarCantidad(id, cantidad - 1);
     }
   };
 
+  // Función para sumar la cantidad de un platillo en la orden
   const sumarCantidad = () => {
-    setCantidad(cantidad + 1);
+    actualizarCantidad(id, cantidad + 1);
   };
 
   return (
     <View style={styles.contenedorPlatillo}>
+      {/* Contenedor de información del platillo */}
       <View style={styles.infoPlatillo}>
-        <Image source={require("../assets/platilloEjemplo.png")} />
+        {/* Imagen del platillo */}
+        <Image style={styles.img} source={{ uri: imagen }} />
+        {/* Contenedor de textos del platillo */}
         <View style={styles.textosPlatillo}>
+          {/* Nombre del platillo */}
           <Text style={styles.nombrePlatillo}>{nombrePlatillo}</Text>
-          <Text style={styles.precio}>{precio}</Text>
+          {/* Precio del platillo */}
+          <Text style={styles.precio}>${precio}</Text>
         </View>
       </View>
 
+      {/* Contenedor de botones para ajustar la cantidad del platillo */}
       <View style={styles.botonesCantidad}>
+        {/* Botón para restar cantidad */}
         <TouchableOpacity onPress={restarCantidad} style={styles.boton}>
           <Text style={styles.textoBoton}>-</Text>
         </TouchableOpacity>
+        {/* Texto que muestra la cantidad actual */}
         <Text style={styles.cantidad}>{cantidad}</Text>
+        {/* Botón para sumar cantidad */}
         <TouchableOpacity onPress={sumarCantidad} style={styles.boton}>
           <Text style={styles.textoBoton}>+</Text>
         </TouchableOpacity>
       </View>
-
-      {/* <Image source={require("../assets/flechaDerecha.png")} /> */}
     </View>
   );
 };
 
+// Estilos del componente PlatilloCard2
 const styles = StyleSheet.create({
   contenedorPlatillo: {
     backgroundColor: "white",
@@ -64,7 +94,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   nombrePlatillo: {
-    fontSize: 19,
+    fontSize: 18,
+    width: 120,
     color: "#35253A",
   },
   precio: {
@@ -98,6 +129,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#35253A",
   },
+  img: {
+    width: 100,
+    height: 100,
+  },
 });
 
+// Exportar el componente PlatilloCard2 como componente predeterminado
 export default PlatilloCard2;
